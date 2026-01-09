@@ -1,0 +1,14 @@
+/* Overrides to neutralize legacy styles from index.css */
+
+/* Ensure body and root use the minimal theme */
+html,body,#root{background:transparent!important;height:100%!important}
+body{background:var(--bg) !important;color:var(--brand) !important}
+
+/* Ensure form controls look consistent */
+input,button,select,textarea{font-family:inherit}
+
+/* Tables should not span full ugly bootstrap defaults */
+.table{background:transparent;border:0}
+
+/* Make links consistent */
+a{color:inherit}
