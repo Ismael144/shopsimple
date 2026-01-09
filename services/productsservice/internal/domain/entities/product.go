@@ -10,13 +10,13 @@ type Product struct {
 	ID          valueobjects.ProductID
 	ProductName string
 	Description string
-	UnitPrice   int64
+	UnitPrice   float64
 	Stock       int64
 	CategoryID  valueobjects.CategoryID
 	CreatedAt   time.Time
 }
 
-func NewProduct(product_name, description string, unit_price, stock int64, category_id string, now time.Time) Product {
+func NewProduct(product_name, description string, unit_price float64, stock int64, category_id string, now time.Time) Product {
 	return Product{
 		ID:          valueobjects.NewProductID(),
 		ProductName: product_name,

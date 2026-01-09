@@ -3,14 +3,17 @@ package handlers
 import (
 	"context"
 
-	"google.golang.org/grpc"
+	_ "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
-	userv1 "github.com/Ismael144/productsservice/gen/go/proto/product/v1"
+	productv1 "github.com/Ismael144/productsservice/gen/go/proto/product/v1"
 	"github.com/Ismael144/productsservice/internal/application"
+	"github.com/Ismael144/productsservice/internal/transport/grpc/mapper"
 )
 
 type ProductHandler struct {
-	userv1.UnimplementedProductServiceServer
+	productv1.UnimplementedProductServiceServer
 	products *application.ProductsService
 }
 
@@ -18,6 +21,25 @@ func NewProductHandler(products *application.ProductsService) *ProductHandler {
 	return &ProductHandler{products: products}
 }
 
-func (h *ProductHandler) List(ctx context.Context, req *userv1.ListRequest) (*userv1.ListResponse, error) {
-	// Unimplemeneted
+func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (*productv1.ListResponse, error) {
+	products, totalCount, err := h.products.List(ctx, req.Page, req.PageSize)
+
+	// Check error existence
+	if err != nil {
+		return &productv1.ListResponse{
+			Products: []*productv1.Product{},
+			Total:    0,
+		}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	// Convert domain products to proto products
+	protoProducts := []*productv1.Product{}
+	for _, product := range products {
+		protoProducts = append(protoProducts, mapper.ToProtoProduct(product))
+	}
+
+	return &productv1.ListResponse{
+		Products: protoProducts,
+		Total:    totalCount,
+	}, nil
 }
