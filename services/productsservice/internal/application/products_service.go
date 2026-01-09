@@ -6,9 +6,9 @@ import (
 )
 
 type ProductsService struct {
-	repo *repository.ProductsRespository
+	repo *ports.ProductsRespository
 }
 
-func NewProductsService(repo *repository.ProductsRespository) *ProductsService {
+func NewProductsService(repo *ports.ProductsRespository) *ProductsService {
 	return &ProductsService{repo: repo}
 }
