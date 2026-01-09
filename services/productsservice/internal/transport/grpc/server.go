@@ -9,15 +9,20 @@ import (
 	"google.golang.org/grpc"
 )
 
+type Server struct {
+	grpc *grpc.Server
+	lis  net.Listener
+}
+
 // Start new GRPC Server
 func NewServer(
 	addr string,
 	app *application.ProductsService,
 	unaryInterceptors ...grpc.UnaryServerInterceptor,
-) error {
+) (*Server, error) {
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Adding interceptors
@@ -32,5 +37,18 @@ func NewServer(
 	)
 
 	// Serve GRPC Server
-	return server.Serve(lis)
+	return &Server{
+		grpc: server,
+		lis:  lis,
+	}, nil
+}
+
+// Start server
+func (s *Server) Start() error {
+	return s.grpc.Serve(s.lis)
+}
+
+// Stop server
+func (s *Server) Stop() {
+	s.grpc.GracefulStop()
 }

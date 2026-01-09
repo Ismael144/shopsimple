@@ -31,30 +31,37 @@ func main() {
 		productsRepo,
 	)
 
+	// Initialize server
+	server, err := grpcTransport.NewServer(
+		cfg.GRPCAddr,
+		productsService,
+		interceptors.RequestID(),
+		interceptors.Logging(),
+	)
+
+	if err != nil {
+		log.Fatalf("gRPC server failed: %v", err)
+	}
+
 	// Grpc server
 	go func() {
 		log.Printf("starting gRPC server on %s", cfg.GRPCAddr)
-
-		err := grpcTransport.NewServer(
-			cfg.GRPCAddr,
-			productsService,
-			interceptors.RequestID(),
-			interceptors.Logging(),
-		)
-
-		if err != nil {
-			log.Fatalf("gRPC server failed: %v", err)
+		if err := server.Start(); err != nil {
+			log.Fatalf("GRPC Server error: %v", err)
 		}
 	}()
 
 	// Graceful shutdown
-	waitForShutdown()
+	waitForShutdown(server)
 }
 
-func waitForShutdown() {
+func waitForShutdown(server *grpcTransport.Server) {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
 	sig := <-ch
 	log.Printf("received signal %s, shutting down", sig)
+
+	server.Stop()
+	log.Printf("Server stopped gracefully...")
 }
