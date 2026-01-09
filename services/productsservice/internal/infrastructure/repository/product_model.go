@@ -1,14 +1,20 @@
 package repository
 
-import "gorm.io/gorm"
+import "time"
 
 type ProductModel struct {
-	gorm.Model
-	ID          string               `gorm:"primaryKey;type:uuid;"`
-	ProductName string               `gorm:"uniqueIndex;not null"`
-	Description string               `gorm:"null"`
-	UnitPrice   float64              `gorm:"not null"`
+	ID          string  `gorm:"primaryKey;type:uuid;"`
+	ProductName string  `gorm:"uniqueIndex;not null"`
+	Description string  `gorm:"null"`
+	UnitPrice   float64 `gorm:"not null"`
+	ImageUrl    string
 	Stock       int64                `gorm:"not null"`
-	CategoryId  uint                 `gorm:"column:category_id;foreignKey:CategoryID;references:ID"`
+	CategoryId  string               `gorm:"column:category_id;foreignKey:CategoryID;references:ID"`
 	Category    ProductCategoryModel `gorm:"foreignKey:CategoryID"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (ProductModel) TableName() string {
+	return "products"
 }

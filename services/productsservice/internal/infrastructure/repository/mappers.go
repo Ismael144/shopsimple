@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"strconv"
+	"time"
 
 	domain "github.com/Ismael144/productsservice/internal/domain/entities"
 	"github.com/Ismael144/productsservice/internal/domain/valueobjects"
@@ -13,6 +13,7 @@ func productModelToDomain(m *ProductModel) *domain.Product {
 		ProductName: m.ProductName,
 		Description: m.Description,
 		UnitPrice:   m.UnitPrice,
+		ImageUrl:    m.ImageUrl,
 		Stock:       m.Stock,
 		CategoryID:  valueobjects.CategoryID(m.Category.ID),
 		CreatedAt:   m.CreatedAt,
@@ -20,15 +21,16 @@ func productModelToDomain(m *ProductModel) *domain.Product {
 }
 
 func productDomainToModel(u *domain.Product) ProductModel {
-	category_id, _ := strconv.ParseUint(u.CategoryID.String(), 10, 64)
-
 	return ProductModel{
 		ID:          u.ID.String(),
 		ProductName: u.ProductName,
 		Description: u.Description,
 		UnitPrice:   u.UnitPrice,
+		ImageUrl:    u.ImageUrl,
 		Stock:       u.Stock,
-		CategoryId:  uint(category_id),
+		CategoryId:  u.CategoryID.String(),
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 }
 

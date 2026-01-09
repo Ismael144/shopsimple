@@ -53,14 +53,20 @@ func (r *ProductsRepository) List(ctx context.Context, page, pageSize uint32) ([
 		total  int64
 	)
 
-	tx := r.db.WithContext(ctx).
+	query := r.db.WithContext(ctx).
 		Model(&ProductModel{})
 
-	tx.Count(&total)
+	if err := query.Session(&gorm.Session{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
 
+	// Safety check
+	if page < 1 {
+		page = 1
+	}
 	offset := int((page - 1) * pageSize)
 
-	err := tx.Limit(int(pageSize)).
+	err := query.Limit(int(pageSize)).
 		Offset(offset).
 		Find(&models).
 		Error

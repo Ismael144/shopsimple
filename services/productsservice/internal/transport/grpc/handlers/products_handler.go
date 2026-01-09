@@ -29,7 +29,7 @@ func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (
 		return &productv1.ListResponse{
 			Products: []*productv1.Product{},
 			Total:    0,
-		}, status.Error(codes.InvalidArgument, err.Error())
+		}, status.Error(codes.Internal, err.Error())
 	}
 
 	// Convert domain products to proto products

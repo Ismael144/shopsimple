@@ -28,9 +28,10 @@ type Product struct {
 	ProductName   string                 `protobuf:"bytes,2,opt,name=product_name,json=productName,proto3" json:"product_name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	UnitPrice     float64                `protobuf:"fixed64,4,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
-	Stock         uint64                 `protobuf:"varint,5,opt,name=stock,proto3" json:"stock,omitempty"`
-	CategoryId    string                 `protobuf:"bytes,6,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,5,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	Stock         uint64                 `protobuf:"varint,6,opt,name=stock,proto3" json:"stock,omitempty"`
+	CategoryId    string                 `protobuf:"bytes,7,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,6 +92,13 @@ func (x *Product) GetUnitPrice() float64 {
 		return x.UnitPrice
 	}
 	return 0
+}
+
+func (x *Product) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
 }
 
 func (x *Product) GetStock() uint64 {
@@ -223,9 +231,10 @@ type CreateRequest struct {
 	ProductName   string                 `protobuf:"bytes,1,opt,name=product_name,json=productName,proto3" json:"product_name,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	UnitPrice     float32                `protobuf:"fixed32,3,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
-	Stock         uint32                 `protobuf:"varint,4,opt,name=stock,proto3" json:"stock,omitempty"`
-	CategoryId    string                 `protobuf:"bytes,5,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,4,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	Stock         uint32                 `protobuf:"varint,5,opt,name=stock,proto3" json:"stock,omitempty"`
+	CategoryId    string                 `protobuf:"bytes,6,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -279,6 +288,13 @@ func (x *CreateRequest) GetUnitPrice() float32 {
 		return x.UnitPrice
 	}
 	return 0
+}
+
+func (x *CreateRequest) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
 }
 
 func (x *CreateRequest) GetStock() uint32 {
@@ -351,34 +367,36 @@ var File_proto_product_v1_product_proto protoreflect.FileDescriptor
 const file_proto_product_v1_product_proto_rawDesc = "" +
 	"\n" +
 	"\x1eproto/product/v1/product.proto\x12\n" +
-	"product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xef\x01\n" +
+	"product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8c\x02\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\fproduct_name\x18\x02 \x01(\tR\vproductName\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1d\n" +
 	"\n" +
-	"unit_price\x18\x04 \x01(\x01R\tunitPrice\x12\x14\n" +
-	"\x05stock\x18\x05 \x01(\x04R\x05stock\x12\x1f\n" +
-	"\vcategory_id\x18\x06 \x01(\tR\n" +
+	"unit_price\x18\x04 \x01(\x01R\tunitPrice\x12\x1b\n" +
+	"\timage_url\x18\x05 \x01(\tR\bimageUrl\x12\x14\n" +
+	"\x05stock\x18\x06 \x01(\x04R\x05stock\x12\x1f\n" +
+	"\vcategory_id\x18\a \x01(\tR\n" +
 	"categoryId\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\">\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\">\n" +
 	"\vListRequest\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\rR\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\rR\bpageSize\"U\n" +
 	"\fListResponse\x12/\n" +
 	"\bproducts\x18\x01 \x03(\v2\x13.product.v1.ProductR\bproducts\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\rR\x05total\"\xe5\x01\n" +
+	"\x05total\x18\x02 \x01(\rR\x05total\"\x82\x02\n" +
 	"\rCreateRequest\x12!\n" +
 	"\fproduct_name\x18\x01 \x01(\tR\vproductName\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x1d\n" +
 	"\n" +
-	"unit_price\x18\x03 \x01(\x02R\tunitPrice\x12\x14\n" +
-	"\x05stock\x18\x04 \x01(\rR\x05stock\x12\x1f\n" +
-	"\vcategory_id\x18\x05 \x01(\tR\n" +
+	"unit_price\x18\x03 \x01(\x02R\tunitPrice\x12\x1b\n" +
+	"\timage_url\x18\x04 \x01(\tR\bimageUrl\x12\x14\n" +
+	"\x05stock\x18\x05 \x01(\rR\x05stock\x12\x1f\n" +
+	"\vcategory_id\x18\x06 \x01(\tR\n" +
 	"categoryId\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"/\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"/\n" +
 	"\x0eCreateResponse\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId2\x8c\x01\n" +

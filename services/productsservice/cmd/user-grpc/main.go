@@ -12,13 +12,20 @@ import (
 	"github.com/Ismael144/productsservice/internal/infrastructure/repository"
 	grpcTransport "github.com/Ismael144/productsservice/internal/transport/grpc"
 	"github.com/Ismael144/productsservice/internal/transport/grpc/interceptors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load env
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	cfg := config.LoadConfig()
 
 	// Database
-	gormDB, err := db.NewPostgres(cfg.PostgresDSN)
+	gormDB, err := db.NewPostgres(cfg.DatabaseURL)
 	if err != nil {
 		log.Fatalf("failed to connect to postgres: %v", err)
 	}

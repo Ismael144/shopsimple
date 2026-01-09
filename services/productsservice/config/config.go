@@ -7,13 +7,13 @@ import (
 
 type Config struct {
 	GRPCAddr    string
-	PostgresDSN string
+	DatabaseURL string
 }
 
 func LoadConfig() Config {
 	return Config{
-		GRPCAddr:    getEnv("GRPC_ADDR", "50051"),
-		PostgresDSN: mustEnv("POSTGRES_DSN"),
+		GRPCAddr:    getEnv("GRPC_ADDR", ":50051"),
+		DatabaseURL: mustEnv("DATABASE_URL"),
 	}
 }
 

@@ -6,7 +6,11 @@ import (
 	productv1 "github.com/Ismael144/productsservice/gen/go/proto/product/v1"
 	"github.com/Ismael144/productsservice/internal/application"
 	"github.com/Ismael144/productsservice/internal/transport/grpc/handlers"
+
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
@@ -30,11 +34,22 @@ func NewServer(
 		grpc.ChainUnaryInterceptor(unaryInterceptors...),
 	)
 
-	// Register Product Service
+	// Product Service
 	productv1.RegisterProductServiceServer(
 		server,
 		handlers.NewProductHandler(app),
 	)
+
+	// Health Service
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus(
+		"", // overall server status
+		healthpb.HealthCheckResponse_SERVING,
+	)
+	healthpb.RegisterHealthServer(server, healthServer)
+
+	// Reflection
+	reflection.Register(server)
 
 	// Serve GRPC Server
 	return &Server{

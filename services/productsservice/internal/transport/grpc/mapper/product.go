@@ -12,6 +12,7 @@ func ToProtoProduct(product *domain.Product) *userv1.Product {
 		ProductName: product.ProductName,
 		Description: product.Description,
 		UnitPrice:   product.UnitPrice,
+		ImageUrl:    product.ImageUrl,
 		Stock:       uint64(product.Stock),
 		CategoryId:  product.CategoryID.String(),
 		CreatedAt:   timestamppb.New(product.CreatedAt),
