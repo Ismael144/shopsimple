@@ -15,6 +15,7 @@ import (
 	domain "github.com/Ismael144/productservice/internal/domain/entities"
 	"github.com/Ismael144/productservice/internal/domain/valueobjects"
 	"github.com/Ismael144/productservice/internal/transport/grpc/mapper"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type ProductHandler struct {
@@ -97,6 +98,8 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 	}, nil
 }
 
+// Product Categories Services 
+
 func (c *ProductHandler) CreateCategory(ctx context.Context, req *productv1.CreateCategoryRequest) (*productv1.CreateCategoryResponse, error) {
 	categoryDomain := domain.NewProductCategory(req.Name, time.Now())
 
@@ -117,7 +120,9 @@ func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.List
 	grpcCategories := make([]*productv1.ProductCategory, 0, len(categories))
 	for _, category := range categories {
 		grpcCategories = append(grpcCategories, &productv1.ProductCategory{
+			Id: category.ID.String(),
 			Name: category.Name,
+			CreatedAt: timestamppb.New(category.CreatedAt),
 		})
 	}
 

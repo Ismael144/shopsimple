@@ -22,7 +22,7 @@ const (
 	ProductService_List_FullMethodName           = "/shopsimple.product.v1.ProductService/List"
 	ProductService_Create_FullMethodName         = "/shopsimple.product.v1.ProductService/Create"
 	ProductService_Filter_FullMethodName         = "/shopsimple.product.v1.ProductService/Filter"
-	ProductService_CreateCatgory_FullMethodName  = "/shopsimple.product.v1.ProductService/CreateCatgory"
+	ProductService_CreateCategory_FullMethodName = "/shopsimple.product.v1.ProductService/CreateCategory"
 	ProductService_ListCategories_FullMethodName = "/shopsimple.product.v1.ProductService/ListCategories"
 )
 
@@ -39,7 +39,7 @@ type ProductServiceClient interface {
 	// Filter by properties
 	Filter(ctx context.Context, in *FilterRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	// Create Product Category
-	CreateCatgory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
+	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
 	// List Categories
 	ListCategories(ctx context.Context, in *ListCategoriesRequest, opts ...grpc.CallOption) (*ListCategoriesResponse, error)
 }
@@ -82,10 +82,10 @@ func (c *productServiceClient) Filter(ctx context.Context, in *FilterRequest, op
 	return out, nil
 }
 
-func (c *productServiceClient) CreateCatgory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
+func (c *productServiceClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateCategoryResponse)
-	err := c.cc.Invoke(ctx, ProductService_CreateCatgory_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ProductService_CreateCategory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ type ProductServiceServer interface {
 	// Filter by properties
 	Filter(context.Context, *FilterRequest) (*ListResponse, error)
 	// Create Product Category
-	CreateCatgory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
+	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
 	// List Categories
 	ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
@@ -137,8 +137,8 @@ func (UnimplementedProductServiceServer) Create(context.Context, *CreateRequest)
 func (UnimplementedProductServiceServer) Filter(context.Context, *FilterRequest) (*ListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Filter not implemented")
 }
-func (UnimplementedProductServiceServer) CreateCatgory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateCatgory not implemented")
+func (UnimplementedProductServiceServer) CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateCategory not implemented")
 }
 func (UnimplementedProductServiceServer) ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListCategories not implemented")
@@ -218,20 +218,20 @@ func _ProductService_Filter_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductService_CreateCatgory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductService_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateCategoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServiceServer).CreateCatgory(ctx, in)
+		return srv.(ProductServiceServer).CreateCategory(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProductService_CreateCatgory_FullMethodName,
+		FullMethod: ProductService_CreateCategory_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).CreateCatgory(ctx, req.(*CreateCategoryRequest))
+		return srv.(ProductServiceServer).CreateCategory(ctx, req.(*CreateCategoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -274,8 +274,8 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProductService_Filter_Handler,
 		},
 		{
-			MethodName: "CreateCatgory",
-			Handler:    _ProductService_CreateCatgory_Handler,
+			MethodName: "CreateCategory",
+			Handler:    _ProductService_CreateCategory_Handler,
 		},
 		{
 			MethodName: "ListCategories",

@@ -779,12 +779,12 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\x05total\x18\x02 \x01(\rR\x05total\"+\n" +
 	"\x15CreateCategoryRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"\x18\n" +
-	"\x16CreateCategoryResponse2\xea\x03\n" +
+	"\x16CreateCategoryResponse2\xeb\x03\n" +
 	"\x0eProductService\x12O\n" +
 	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\x12U\n" +
 	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\x12S\n" +
-	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12l\n" +
-	"\rCreateCatgory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\x12m\n" +
+	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12m\n" +
+	"\x0eCreateCategory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\x12m\n" +
 	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
 
 var (
@@ -825,12 +825,12 @@ var file_shopsimple_product_v1_product_proto_depIdxs = []int32{
 	2,  // 6: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
 	4,  // 7: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
 	6,  // 8: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
-	10, // 9: shopsimple.product.v1.ProductService.CreateCatgory:input_type -> shopsimple.product.v1.CreateCategoryRequest
+	10, // 9: shopsimple.product.v1.ProductService.CreateCategory:input_type -> shopsimple.product.v1.CreateCategoryRequest
 	8,  // 10: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
 	3,  // 11: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
 	5,  // 12: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
 	3,  // 13: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
-	11, // 14: shopsimple.product.v1.ProductService.CreateCatgory:output_type -> shopsimple.product.v1.CreateCategoryResponse
+	11, // 14: shopsimple.product.v1.ProductService.CreateCategory:output_type -> shopsimple.product.v1.CreateCategoryResponse
 	9,  // 15: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
 	11, // [11:16] is the sub-list for method output_type
 	6,  // [6:11] is the sub-list for method input_type

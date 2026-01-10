@@ -19,7 +19,7 @@ func NewProductCategoryRepository(db *gorm.DB) *ProductCategoryRepository {
 func (r *ProductCategoryRepository) Create(ctx context.Context, p *domain.ProductCategory) error {
 	model := CategoryDomainToModel(p)
 	return r.db.WithContext(ctx).
-		Create(model).
+		Create(&model).
 		Error
 }
 
