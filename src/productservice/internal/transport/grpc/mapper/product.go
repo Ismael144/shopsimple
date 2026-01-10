@@ -6,10 +6,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// Convert domain product to grpc product
 func ToProtoProduct(product *domain.Product) *productv1.Product {
 	return &productv1.Product{
 		Id:          product.ID.String(),
-		ProductName: product.ProductName,
+		Name:        product.Name,
 		Description: product.Description,
 		UnitPrice:   product.UnitPrice,
 		ImageUrl:    product.ImageUrl,
@@ -17,4 +18,13 @@ func ToProtoProduct(product *domain.Product) *productv1.Product {
 		CategoryId:  product.CategoryID.String(),
 		CreatedAt:   timestamppb.New(product.CreatedAt),
 	}
+}
+
+// Convert a list of domain products to grpc products
+func ToProtoProducts(products []*domain.Product) []*productv1.Product {
+	grpcProducts := make([]*productv1.Product, 0, len(products))
+	for _, product := range products {
+		grpcProducts = append(grpcProducts, ToProtoProduct(product))
+	}
+	return grpcProducts
 }

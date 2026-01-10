@@ -10,7 +10,7 @@ import (
 func productModelToDomain(m *ProductModel) *domain.Product {
 	return &domain.Product{
 		ID:          valueobjects.ProductID(m.ID),
-		ProductName: m.ProductName,
+		Name:        m.Name,
 		Description: m.Description,
 		UnitPrice:   m.UnitPrice,
 		ImageUrl:    m.ImageUrl,
@@ -23,7 +23,7 @@ func productModelToDomain(m *ProductModel) *domain.Product {
 func productDomainToModel(u *domain.Product) ProductModel {
 	return ProductModel{
 		ID:          u.ID.String(),
-		ProductName: u.ProductName,
+		Name:        u.Name,
 		Description: u.Description,
 		UnitPrice:   u.UnitPrice,
 		ImageUrl:    u.ImageUrl,

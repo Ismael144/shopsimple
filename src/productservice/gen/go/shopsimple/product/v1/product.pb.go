@@ -25,7 +25,7 @@ const (
 type Product struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProductName   string                 `protobuf:"bytes,2,opt,name=product_name,json=productName,proto3" json:"product_name,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	UnitPrice     float64                `protobuf:"fixed64,4,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
 	ImageUrl      string                 `protobuf:"bytes,5,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
@@ -73,9 +73,9 @@ func (x *Product) GetId() string {
 	return ""
 }
 
-func (x *Product) GetProductName() string {
+func (x *Product) GetName() string {
 	if x != nil {
-		return x.ProductName
+		return x.Name
 	}
 	return ""
 }
@@ -362,14 +362,142 @@ func (x *CreateResponse) GetProductId() string {
 	return ""
 }
 
+type FilterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          uint32                 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      uint32                 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	SearchString  string                 `protobuf:"bytes,3,opt,name=search_string,json=searchString,proto3" json:"search_string,omitempty"`
+	Categories    []string               `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
+	PriceRanges   *PriceRanges           `protobuf:"bytes,5,opt,name=price_ranges,json=priceRanges,proto3" json:"price_ranges,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterRequest) Reset() {
+	*x = FilterRequest{}
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterRequest) ProtoMessage() {}
+
+func (x *FilterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterRequest.ProtoReflect.Descriptor instead.
+func (*FilterRequest) Descriptor() ([]byte, []int) {
+	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FilterRequest) GetPage() uint32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *FilterRequest) GetPageSize() uint32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *FilterRequest) GetSearchString() string {
+	if x != nil {
+		return x.SearchString
+	}
+	return ""
+}
+
+func (x *FilterRequest) GetCategories() []string {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
+func (x *FilterRequest) GetPriceRanges() *PriceRanges {
+	if x != nil {
+		return x.PriceRanges
+	}
+	return nil
+}
+
+type PriceRanges struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Min           float32                `protobuf:"fixed32,1,opt,name=min,proto3" json:"min,omitempty"`
+	Max           float32                `protobuf:"fixed32,2,opt,name=max,proto3" json:"max,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PriceRanges) Reset() {
+	*x = PriceRanges{}
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PriceRanges) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriceRanges) ProtoMessage() {}
+
+func (x *PriceRanges) ProtoReflect() protoreflect.Message {
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriceRanges.ProtoReflect.Descriptor instead.
+func (*PriceRanges) Descriptor() ([]byte, []int) {
+	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PriceRanges) GetMin() float32 {
+	if x != nil {
+		return x.Min
+	}
+	return 0
+}
+
+func (x *PriceRanges) GetMax() float32 {
+	if x != nil {
+		return x.Max
+	}
+	return 0
+}
+
 var File_shopsimple_product_v1_product_proto protoreflect.FileDescriptor
 
 const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8c\x02\n" +
+	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfd\x01\n" +
 	"\aProduct\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
-	"\fproduct_name\x18\x02 \x01(\tR\vproductName\x12 \n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1d\n" +
 	"\n" +
 	"unit_price\x18\x04 \x01(\x01R\tunitPrice\x12\x1b\n" +
@@ -398,10 +526,22 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"/\n" +
 	"\x0eCreateResponse\x12\x1d\n" +
 	"\n" +
-	"product_id\x18\x01 \x01(\tR\tproductId2\xb8\x01\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\"\xcc\x01\n" +
+	"\rFilterRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\rR\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\rR\bpageSize\x12#\n" +
+	"\rsearch_string\x18\x03 \x01(\tR\fsearchString\x12\x1e\n" +
+	"\n" +
+	"categories\x18\x04 \x03(\tR\n" +
+	"categories\x12E\n" +
+	"\fprice_ranges\x18\x05 \x01(\v2\".shopsimple.product.v1.PriceRangesR\vpriceRanges\"1\n" +
+	"\vPriceRanges\x12\x10\n" +
+	"\x03min\x18\x01 \x01(\x02R\x03min\x12\x10\n" +
+	"\x03max\x18\x02 \x01(\x02R\x03max2\x8d\x02\n" +
 	"\x0eProductService\x12O\n" +
 	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\x12U\n" +
-	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
+	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\x12S\n" +
+	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
 
 var (
 	file_shopsimple_product_v1_product_proto_rawDescOnce sync.Once
@@ -415,28 +555,33 @@ func file_shopsimple_product_v1_product_proto_rawDescGZIP() []byte {
 	return file_shopsimple_product_v1_product_proto_rawDescData
 }
 
-var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*Product)(nil),               // 0: shopsimple.product.v1.Product
 	(*ListRequest)(nil),           // 1: shopsimple.product.v1.ListRequest
 	(*ListResponse)(nil),          // 2: shopsimple.product.v1.ListResponse
 	(*CreateRequest)(nil),         // 3: shopsimple.product.v1.CreateRequest
 	(*CreateResponse)(nil),        // 4: shopsimple.product.v1.CreateResponse
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*FilterRequest)(nil),         // 5: shopsimple.product.v1.FilterRequest
+	(*PriceRanges)(nil),           // 6: shopsimple.product.v1.PriceRanges
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
 }
 var file_shopsimple_product_v1_product_proto_depIdxs = []int32{
-	5, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
+	7, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
 	0, // 1: shopsimple.product.v1.ListResponse.products:type_name -> shopsimple.product.v1.Product
-	5, // 2: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
-	1, // 3: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
-	3, // 4: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
-	2, // 5: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
-	4, // 6: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	7, // 2: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
+	6, // 3: shopsimple.product.v1.FilterRequest.price_ranges:type_name -> shopsimple.product.v1.PriceRanges
+	1, // 4: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
+	3, // 5: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
+	5, // 6: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
+	2, // 7: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
+	4, // 8: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
+	2, // 9: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
+	7, // [7:10] is the sub-list for method output_type
+	4, // [4:7] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_shopsimple_product_v1_product_proto_init() }
@@ -450,7 +595,7 @@ func file_shopsimple_product_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shopsimple_product_v1_product_proto_rawDesc), len(file_shopsimple_product_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

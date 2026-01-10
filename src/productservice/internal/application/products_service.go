@@ -15,10 +15,27 @@ func Newproductservice(repo ports.ProductsRespository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
-func (p *ProductService) List(ctx context.Context, page, pageSize uint32) ([]*domain.Product, uint32, error) {
+func (p *ProductService) List(
+	ctx context.Context,
+	page,
+	pageSize uint32,
+) ([]*domain.Product, uint32, error) {
 	return p.repo.List(ctx, page, pageSize)
 }
 
-func (p *ProductService) Create(ctx context.Context, new_product *domain.Product) error {
+func (p *ProductService) Create(
+	ctx context.Context,
+	new_product *domain.Product,
+) error {
 	return p.repo.Create(ctx, new_product)
 }
+
+func (p *ProductService) Filter(
+	ctx context.Context,
+	product_filters *ports.ProductFilters,
+) ([]*domain.Product, uint32, error) {
+	return p.repo.FilterByProductFiltersObject(ctx, product_filters)
+}
+
+// grpcurl -plaintext -d '{"categories": [], "search_string": "a", "price_ranges": { "min": 0.0, "max": 120000.0 }}'     localhost:50051     shopsimple.product.v1.ProductService/Filter
+

@@ -3,21 +3,21 @@ package ports
 import (
 	"context"
 
-	"github.com/Ismael144/productservice/internal/domain/entities"
+	domain "github.com/Ismael144/productservice/internal/domain/entities"
 	"github.com/Ismael144/productservice/internal/domain/valueobjects"
 )
 
-type PricesFilter struct {
-	Min int64
-	Max int64
+type PriceRanges struct {
+	Min float64
+	Max float64
 }
 
 type ProductFilters struct {
 	Page         uint32
 	PageSize     uint32
 	SearchString string
-	Categories   []*valueobjects.CategoryID
-	Prices       *PricesFilter
+	Categories   []valueobjects.CategoryID
+	PriceRanges  *PriceRanges
 }
 
 type ProductsRespository interface {

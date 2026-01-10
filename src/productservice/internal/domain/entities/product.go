@@ -8,7 +8,7 @@ import (
 
 type Product struct {
 	ID          valueobjects.ProductID
-	ProductName string
+	Name        string
 	Description string
 	UnitPrice   float64
 	ImageUrl    string
@@ -17,10 +17,10 @@ type Product struct {
 	CreatedAt   time.Time
 }
 
-func NewProduct(product_name, description string, unit_price float64, image_url string, stock int64, category_id string, now time.Time) Product {
+func NewProduct(name, description string, unit_price float64, image_url string, stock int64, category_id string, now time.Time) Product {
 	return Product{
 		ID:          valueobjects.NewProductID(),
-		ProductName: product_name,
+		Name:        name,
 		Description: description,
 		UnitPrice:   unit_price,
 		ImageUrl:    image_url,

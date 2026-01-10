@@ -91,7 +91,7 @@ func (r *ProductsRepository) FilterByProductFiltersObject(ctx context.Context, p
 		Model(&ProductModel{})
 
 	if pf.SearchString != "" {
-		query = query.Where("NAME LIKE ?", "%"+pf.SearchString+"%")
+		query = query.Where("name LIKE ?", "%"+pf.SearchString+"%")
 	}
 
 	if len(pf.Categories) != 0 {
@@ -99,13 +99,13 @@ func (r *ProductsRepository) FilterByProductFiltersObject(ctx context.Context, p
 	}
 
 	// Nested price filter
-	if pf.Prices != nil {
-		if pf.Prices.Min > 0 {
-			query = query.Where("unit_price >= ?", pf.Prices.Min)
+	if pf.PriceRanges != nil {
+		if pf.PriceRanges.Min > 0 {
+			query = query.Where("unit_price >= ?", pf.PriceRanges.Min)
 		}
 
-		if pf.Prices.Max > 0 {
-			query = query.Where("unit_price <= ?", pf.Prices.Max)
+		if pf.PriceRanges.Max > 0 {
+			query = query.Where("unit_price <= ?", pf.PriceRanges.Max)
 		}
 	}
 

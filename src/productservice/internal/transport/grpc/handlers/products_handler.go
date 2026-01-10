@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	_ "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -9,6 +11,9 @@ import (
 
 	productv1 "github.com/Ismael144/productservice/gen/go/shopsimple/product/v1"
 	"github.com/Ismael144/productservice/internal/application"
+	"github.com/Ismael144/productservice/internal/application/ports"
+	domain "github.com/Ismael144/productservice/internal/domain/entities"
+	"github.com/Ismael144/productservice/internal/domain/valueobjects"
 	"github.com/Ismael144/productservice/internal/transport/grpc/mapper"
 )
 
@@ -33,10 +38,57 @@ func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (
 	}
 
 	// Convert domain products to proto products
-	protoProducts := []*productv1.Product{}
-	for _, product := range products {
-		protoProducts = append(protoProducts, mapper.ToProtoProduct(product))
+	protoProducts := mapper.ToProtoProducts(products)
+
+	return &productv1.ListResponse{
+		Products: protoProducts,
+		Total:    totalCount,
+	}, nil
+}
+
+func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateRequest) (*productv1.CreateResponse, error) {
+	newProduct := &domain.Product{
+		ID:          valueobjects.NewProductID(),
+		Name:        req.ProductName,
+		Description: req.Description,
+		UnitPrice:   float64(req.UnitPrice),
+		Stock:       int64(req.Stock),
+		CategoryID:  valueobjects.CategoryID(req.CategoryId),
+		CreatedAt:   time.Now(),
 	}
+
+	if err := h.products.Create(ctx, newProduct); err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &productv1.CreateResponse{}, nil
+}
+
+func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterRequest) (*productv1.ListResponse, error) {
+	fmt.Println(req.Page, req.PageSize, req.SearchString, req.Categories, req.PriceRanges)
+	// Convert category ids string to CategoryID type
+	categories := make([]valueobjects.CategoryID, 0, len(req.Categories))
+	for _, categoryID := range req.Categories {
+		categories = append(categories, valueobjects.ParseCategoryID(categoryID))
+	}
+
+	// Convert repo.ProductFilters to grpc.ProductFilters
+	product_filters := ports.ProductFilters{
+		Page:       req.Page,
+		PageSize:   req.PageSize,
+		Categories: categories,
+		PriceRanges: &ports.PriceRanges{
+			Min: float64(req.PriceRanges.Min),
+			Max: float64(req.PriceRanges.Max),
+		},
+	}
+
+	products, totalCount, err := h.products.Filter(ctx, &product_filters)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	protoProducts := mapper.ToProtoProducts(products)
 
 	return &productv1.ListResponse{
 		Products: protoProducts,

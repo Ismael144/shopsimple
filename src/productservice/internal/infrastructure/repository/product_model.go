@@ -4,7 +4,7 @@ import "time"
 
 type ProductModel struct {
 	ID          string  `gorm:"primaryKey;type:uuid;"`
-	ProductName string  `gorm:"uniqueIndex;not null"`
+	Name        string  `gorm:"uniqueIndex;not null"`
 	Description string  `gorm:"null"`
 	UnitPrice   float64 `gorm:"not null"`
 	ImageUrl    string
