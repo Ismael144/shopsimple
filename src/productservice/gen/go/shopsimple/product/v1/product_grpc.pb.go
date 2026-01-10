@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.0
 // - protoc             (unknown)
-// source: proto/product/v1/product.proto
+// source: shopsimple/product/v1/product.proto
 
-package userv1
+package productv1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProductService_List_FullMethodName   = "/product.v1.ProductService/List"
-	ProductService_Create_FullMethodName = "/product.v1.ProductService/Create"
+	ProductService_List_FullMethodName   = "/shopsimple.product.v1.ProductService/List"
+	ProductService_Create_FullMethodName = "/shopsimple.product.v1.ProductService/Create"
 )
 
 // ProductServiceClient is the client API for ProductService service.
@@ -150,7 +150,7 @@ func _ProductService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ProductService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "product.v1.ProductService",
+	ServiceName: "shopsimple.product.v1.ProductService",
 	HandlerType: (*ProductServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -163,5 +163,5 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/product/v1/product.proto",
+	Metadata: "shopsimple/product/v1/product.proto",
 }

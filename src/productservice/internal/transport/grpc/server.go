@@ -3,7 +3,7 @@ package grpc
 import (
 	"net"
 
-	productv1 "github.com/Ismael144/productservice/gen/go/proto/product/v1"
+	productv1 "github.com/Ismael144/productservice/gen/go/shopsimple/product/v1"
 	"github.com/Ismael144/productservice/internal/application"
 	"github.com/Ismael144/productservice/internal/transport/grpc/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"

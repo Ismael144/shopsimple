@@ -2,6 +2,7 @@ package interceptors
 
 import (
 	"context"
+	"go.opentelemetry.io/otel/trace"
 	"time"
 
 	"github.com/Ismael144/productservice/internal/infrastructure/requestid"
@@ -22,10 +23,18 @@ func LoggingInterceptor(log *zap.Logger) grpc.UnaryServerInterceptor {
 
 		reqID, _ := requestid.From(ctx)
 
+		span := trace.SpanFromContext(ctx)
+		traceID := ""
+
+		if span != nil {
+			traceID = span.SpanContext().TraceID().String()
+		}
+
 		fields := []zap.Field{
-			zap.String("method", info.FullMethod), 
+			zap.String("method", info.FullMethod),
 			zap.String("request_id", reqID),
-			zap.Duration("duration", time.Since(start)), 
+			zap.String("trace_id", traceID),
+			zap.Duration("duration", time.Since(start)),
 		}
 
 		if err != nil {
