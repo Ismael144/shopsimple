@@ -17,7 +17,7 @@ test_filter_service:
 			"page": 1,
 			"page_size": 20,
 			"search_string": "modern",
-			"categories": [],
+			"categories": ["c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"],
 			"price_ranges": {
 			"min": 10.50,
 			"max": 100000.00

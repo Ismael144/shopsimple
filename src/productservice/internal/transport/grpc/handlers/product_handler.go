@@ -49,7 +49,7 @@ func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (
 func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateRequest) (*productv1.CreateResponse, error) {
 	newProduct := &domain.Product{
 		ID:          valueobjects.NewProductID(),
-		Name:        req.ProductName,
+		Name:        req.Name,
 		Description: req.Description,
 		UnitPrice:   float64(req.UnitPrice),
 		Stock:       int64(req.Stock),

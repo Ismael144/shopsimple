@@ -34,17 +34,17 @@ func productDomainToModel(u *domain.Product) ProductModel {
 	}
 }
 
-func categoryModelToDomain(m *ProductCategoryModel) domain.ProductCategory {
-	return domain.ProductCategory{
+func categoryModelToDomain(m *ProductCategoryModel) *domain.ProductCategory {
+	return &domain.ProductCategory{
 		ID:        valueobjects.CategoryID(m.ID),
 		Name:      m.Name,
 		CreatedAt: m.CreatedAt,
 	}
 }
 
-func categoryDomainToModel(m *ProductCategoryModel) ProductCategoryModel {
+func categoryDomainToModel(m *domain.ProductCategory) ProductCategoryModel {
 	return ProductCategoryModel{
-		ID:   m.ID,
+		ID:	m.ID.String(),
 		Name: m.Name,
 	}
 }

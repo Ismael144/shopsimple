@@ -36,6 +36,3 @@ func (p *ProductService) Filter(
 ) ([]*domain.Product, uint32, error) {
 	return p.repo.FilterByProductFiltersObject(ctx, product_filters)
 }
-
-// grpcurl -plaintext -d '{"categories": [], "search_string": "a", "price_ranges": { "min": 0.0, "max": 120000.0 }}'     localhost:50051     shopsimple.product.v1.ProductService/Filter
-
