@@ -6,7 +6,9 @@ import (
 	productv1 "github.com/Ismael144/productservice/gen/go/proto/product/v1"
 	"github.com/Ismael144/productservice/internal/application"
 	"github.com/Ismael144/productservice/internal/transport/grpc/handlers"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
+	// "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
@@ -31,7 +33,10 @@ func NewServer(
 
 	// Adding interceptors
 	server := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(unaryInterceptors...),
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+		grpc.ChainUnaryInterceptor(
+			unaryInterceptors...
+		),
 	)
 
 	// Product Service

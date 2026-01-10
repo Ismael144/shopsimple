@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"os/signal"
@@ -9,10 +10,13 @@ import (
 	"github.com/Ismael144/productservice/config"
 	"github.com/Ismael144/productservice/internal/application"
 	"github.com/Ismael144/productservice/internal/infrastructure/db"
+	"github.com/Ismael144/productservice/internal/infrastructure/logging"
 	"github.com/Ismael144/productservice/internal/infrastructure/repository"
+	"github.com/Ismael144/productservice/internal/infrastructure/telemetry"
 	grpcTransport "github.com/Ismael144/productservice/internal/transport/grpc"
 	"github.com/Ismael144/productservice/internal/transport/grpc/interceptors"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -32,6 +36,15 @@ func main() {
 
 	// Infrastructure
 	productsRepo := repository.NewProductsRepository(gormDB)
+	ctx := context.Background()
+	logger, _ := logging.New()
+	defer logger.Sync()
+
+	shutdown, err := telemetry.InitTracer("product-service")
+	if err != nil {
+		logger.Fatal("failed to init tracer", zap.Error(err))
+	}
+	defer shutdown(ctx)
 
 	// Application
 	productservice := application.Newproductservice(
@@ -43,7 +56,7 @@ func main() {
 		cfg.GRPCAddr,
 		productservice,
 		interceptors.RequestID(),
-		interceptors.Logging(),
+		interceptors.LoggingInterceptor(logger),
 	)
 
 	if err != nil {
