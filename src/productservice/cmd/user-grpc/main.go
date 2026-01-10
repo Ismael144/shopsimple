@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -55,13 +56,24 @@ func main() {
 	server, err := grpcTransport.NewServer(
 		cfg.GRPCAddr,
 		productservice,
-		interceptors.RequestID(),
+		interceptors.RequestIDInterceptor(),
 		interceptors.LoggingInterceptor(logger),
 	)
 
 	if err != nil {
 		log.Fatalf("gRPC server failed: %v", err)
 	}
+
+	// Start prometheus metrics server
+	_, metricsHandler, err := telemetry.InitMetrics()
+	if err != nil {
+		logger.Fatal("metrics init failed", zap.Error(err))
+	}
+
+	go func() {
+		logger.Info("Metrics server started", zap.String("addr", ":9090"))
+		http.ListenAndServe(":9090", metricsHandler)
+	}()
 
 	// Grpc server
 	go func() {

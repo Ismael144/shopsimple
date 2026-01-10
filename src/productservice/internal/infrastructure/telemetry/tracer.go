@@ -13,7 +13,7 @@ import (
 func InitTracer(serviceName string) (func(context.Context) error, error) {
 	exp, err := jaeger.New(
 		jaeger.WithCollectorEndpoint(
-			jaeger.WithEndpoint("http://jaeger:14268/api/traces"),
+			jaeger.WithEndpoint("http://localhost:14268/api/traces"),
 		),
 	)
 
