@@ -1,6 +1,9 @@
-package repository
+package product
 
-import "time"
+import (
+	"time"
+	product_category "github.com/Ismael144/productservice/internal/infrastructure/repository/product_category"
+)
 
 type ProductModel struct {
 	ID          string  `gorm:"primaryKey;type:uuid;"`
@@ -10,7 +13,7 @@ type ProductModel struct {
 	ImageUrl    string
 	Stock       int64                `gorm:"not null"`
 	CategoryId  string               `gorm:"column:category_id;foreignKey:CategoryID;references:ID"`
-	Category    ProductCategoryModel `gorm:"foreignKey:CategoryID"`
+	Category    product_category.ProductCategoryModel `gorm:"foreignKey:CategoryID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

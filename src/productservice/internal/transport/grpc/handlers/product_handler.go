@@ -19,11 +19,12 @@ import (
 
 type ProductHandler struct {
 	productv1.UnimplementedProductServiceServer
-	products *application.ProductService
+	products   *application.ProductService
+	categories *application.ProductCategoryService
 }
 
-func NewProductHandler(products *application.ProductService) *ProductHandler {
-	return &ProductHandler{products: products}
+func NewProductHandler(products *application.ProductService, categories *application.ProductCategoryService) *ProductHandler {
+	return &ProductHandler{products: products, categories: categories}
 }
 
 func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (*productv1.ListResponse, error) {
@@ -93,5 +94,35 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 	return &productv1.ListResponse{
 		Products: protoProducts,
 		Total:    totalCount,
+	}, nil
+}
+
+func (c *ProductHandler) CreateCategory(ctx context.Context, req *productv1.CreateCategoryRequest) (*productv1.CreateCategoryResponse, error) {
+	categoryDomain := domain.NewProductCategory(req.Name, time.Now())
+
+	if err := c.categories.Create(ctx, &categoryDomain); err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &productv1.CreateCategoryResponse{}, nil
+}
+
+func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.ListCategoriesRequest) (*productv1.ListCategoriesResponse, error) {
+	categories, totalCount, err := c.categories.List(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// Convert domain categories to grpc categories
+	grpcCategories := make([]*productv1.ProductCategory, 0, len(categories))
+	for _, category := range categories {
+		grpcCategories = append(grpcCategories, &productv1.ProductCategory{
+			Name: category.Name,
+		})
+	}
+
+	return &productv1.ListCategoriesResponse{
+		Categories: grpcCategories,
+		Total:      totalCount,
 	}, nil
 }

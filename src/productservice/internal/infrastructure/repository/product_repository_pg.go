@@ -6,6 +6,7 @@ import (
 	"github.com/Ismael144/productservice/internal/application/ports"
 	domain "github.com/Ismael144/productservice/internal/domain/entities"
 	"github.com/Ismael144/productservice/internal/domain/valueobjects"
+	"github.com/Ismael144/productservice/internal/infrastructure/repository/product"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +19,7 @@ func NewProductsRepository(db *gorm.DB) *ProductsRepository {
 }
 
 func (r *ProductsRepository) Create(ctx context.Context, product *domain.Product) error {
-	model := productDomainToModel(product)
+	model := ProductDomainToModel(product)
 	return r.db.WithContext(ctx).
 		Create(model).
 		Error
@@ -32,7 +33,7 @@ func (r *ProductsRepository) UpdateStock(ctx context.Context, product_id *valueo
 }
 
 func (r *ProductsRepository) FindById(ctx context.Context, product_id *valueobjects.ProductID) (*domain.Product, error) {
-	m := ProductModel{}
+	m := product.ProductModel{}
 	err := r.db.WithContext(ctx).
 		Where("id = ?", product_id.String()).
 		First(&m).
@@ -43,18 +44,18 @@ func (r *ProductsRepository) FindById(ctx context.Context, product_id *valueobje
 	}
 
 	// Convert ProductModel to ProductDomain
-	p := productModelToDomain(&m)
+	p := ProductModelToDomain(&m)
 	return p, nil
 }
 
 func (r *ProductsRepository) List(ctx context.Context, page, pageSize uint32) ([]*domain.Product, uint32, error) {
 	var (
-		models []ProductModel
+		models []product.ProductModel
 		total  int64
 	)
 
 	query := r.db.WithContext(ctx).
-		Model(&ProductModel{})
+		Model(&product.ProductModel{})
 
 	if err := query.Session(&gorm.Session{}).Count(&total).Error; err != nil {
 		return nil, 0, err
@@ -77,18 +78,18 @@ func (r *ProductsRepository) List(ctx context.Context, page, pageSize uint32) ([
 
 	products := make([]*domain.Product, 0, len(models))
 	for _, product := range models {
-		products = append(products, productModelToDomain(&product))
+		products = append(products, ProductModelToDomain(&product))
 	}
 
 	return products, uint32(total), nil
 }
 
 func (r *ProductsRepository) FilterByProductFiltersObject(ctx context.Context, pf *ports.ProductFilters) ([]*domain.Product, uint32, error) {
-	var models []*ProductModel
+	var models []*product.ProductModel
 	var totalCount int64
 
 	query := r.db.WithContext(ctx).
-		Model(&ProductModel{})
+		Model(&product.ProductModel{})
 
 	if pf.SearchString != "" {
 		query = query.Where("name LIKE ?", "%"+pf.SearchString+"%")
@@ -127,7 +128,7 @@ func (r *ProductsRepository) FilterByProductFiltersObject(ctx context.Context, p
 
 	products := make([]*domain.Product, 0, len(models))
 	for _, product_model := range models {
-		products = append(products, productModelToDomain(product_model))
+		products = append(products, ProductModelToDomain(product_model))
 	}
 
 	return products, uint32(totalCount), nil

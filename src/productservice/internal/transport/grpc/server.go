@@ -23,7 +23,8 @@ type Server struct {
 // Start new GRPC Server
 func NewServer(
 	addr string,
-	app *application.ProductService,
+	product_service *application.ProductService,
+	category_service *application.ProductCategoryService,
 	unaryInterceptors ...grpc.UnaryServerInterceptor,
 ) (*Server, error) {
 	lis, err := net.Listen("tcp", addr)
@@ -42,7 +43,7 @@ func NewServer(
 	// Product Service
 	productv1.RegisterProductServiceServer(
 		server,
-		handlers.NewProductHandler(app),
+		handlers.NewProductHandler(product_service, category_service),
 	)
 
 	// Health Service

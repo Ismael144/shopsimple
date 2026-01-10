@@ -587,11 +587,11 @@ func (*ListCategoriesRequest) Descriptor() ([]byte, []int) {
 }
 
 type ListCategoriesResponse struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	ProductCategories []*ProductCategory     `protobuf:"bytes,1,rep,name=product_categories,json=productCategories,proto3" json:"product_categories,omitempty"`
-	Total             uint32                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Categories    []*ProductCategory     `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories,omitempty"`
+	Total         uint32                 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCategoriesResponse) Reset() {
@@ -624,9 +624,9 @@ func (*ListCategoriesResponse) Descriptor() ([]byte, []int) {
 	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *ListCategoriesResponse) GetProductCategories() []*ProductCategory {
+func (x *ListCategoriesResponse) GetCategories() []*ProductCategory {
 	if x != nil {
-		return x.ProductCategories
+		return x.Categories
 	}
 	return nil
 }
@@ -636,6 +636,86 @@ func (x *ListCategoriesResponse) GetTotal() uint32 {
 		return x.Total
 	}
 	return 0
+}
+
+type CreateCategoryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCategoryRequest) Reset() {
+	*x = CreateCategoryRequest{}
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCategoryRequest) ProtoMessage() {}
+
+func (x *CreateCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCategoryRequest.ProtoReflect.Descriptor instead.
+func (*CreateCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateCategoryRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type CreateCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCategoryResponse) Reset() {
+	*x = CreateCategoryResponse{}
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCategoryResponse) ProtoMessage() {}
+
+func (x *CreateCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCategoryResponse.ProtoReflect.Descriptor instead.
+func (*CreateCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{11}
 }
 
 var File_shopsimple_product_v1_product_proto protoreflect.FileDescriptor
@@ -691,14 +771,20 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\vPriceRanges\x12\x10\n" +
 	"\x03min\x18\x01 \x01(\x02R\x03min\x12\x10\n" +
 	"\x03max\x18\x02 \x01(\x02R\x03max\"\x17\n" +
-	"\x15ListCategoriesRequest\"\x85\x01\n" +
-	"\x16ListCategoriesResponse\x12U\n" +
-	"\x12product_categories\x18\x01 \x03(\v2&.shopsimple.product.v1.ProductCategoryR\x11productCategories\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\rR\x05total2\xfc\x02\n" +
+	"\x15ListCategoriesRequest\"v\n" +
+	"\x16ListCategoriesResponse\x12F\n" +
+	"\n" +
+	"categories\x18\x01 \x03(\v2&.shopsimple.product.v1.ProductCategoryR\n" +
+	"categories\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\rR\x05total\"+\n" +
+	"\x15CreateCategoryRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\x18\n" +
+	"\x16CreateCategoryResponse2\xea\x03\n" +
 	"\x0eProductService\x12O\n" +
 	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\x12U\n" +
 	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\x12S\n" +
-	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12m\n" +
+	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12l\n" +
+	"\rCreateCatgory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\x12m\n" +
 	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
 
 var (
@@ -713,7 +799,7 @@ func file_shopsimple_product_v1_product_proto_rawDescGZIP() []byte {
 	return file_shopsimple_product_v1_product_proto_rawDescData
 }
 
-var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*Product)(nil),                // 0: shopsimple.product.v1.Product
 	(*ProductCategory)(nil),        // 1: shopsimple.product.v1.ProductCategory
@@ -725,25 +811,29 @@ var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*PriceRanges)(nil),            // 7: shopsimple.product.v1.PriceRanges
 	(*ListCategoriesRequest)(nil),  // 8: shopsimple.product.v1.ListCategoriesRequest
 	(*ListCategoriesResponse)(nil), // 9: shopsimple.product.v1.ListCategoriesResponse
-	(*timestamppb.Timestamp)(nil),  // 10: google.protobuf.Timestamp
+	(*CreateCategoryRequest)(nil),  // 10: shopsimple.product.v1.CreateCategoryRequest
+	(*CreateCategoryResponse)(nil), // 11: shopsimple.product.v1.CreateCategoryResponse
+	(*timestamppb.Timestamp)(nil),  // 12: google.protobuf.Timestamp
 }
 var file_shopsimple_product_v1_product_proto_depIdxs = []int32{
-	10, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
-	10, // 1: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
+	12, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
+	12, // 1: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 2: shopsimple.product.v1.ListResponse.products:type_name -> shopsimple.product.v1.Product
-	10, // 3: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
+	12, // 3: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
 	7,  // 4: shopsimple.product.v1.FilterRequest.price_ranges:type_name -> shopsimple.product.v1.PriceRanges
-	1,  // 5: shopsimple.product.v1.ListCategoriesResponse.product_categories:type_name -> shopsimple.product.v1.ProductCategory
+	1,  // 5: shopsimple.product.v1.ListCategoriesResponse.categories:type_name -> shopsimple.product.v1.ProductCategory
 	2,  // 6: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
 	4,  // 7: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
 	6,  // 8: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
-	8,  // 9: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
-	3,  // 10: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
-	5,  // 11: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
-	3,  // 12: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
-	9,  // 13: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
-	10, // [10:14] is the sub-list for method output_type
-	6,  // [6:10] is the sub-list for method input_type
+	10, // 9: shopsimple.product.v1.ProductService.CreateCatgory:input_type -> shopsimple.product.v1.CreateCategoryRequest
+	8,  // 10: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
+	3,  // 11: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
+	5,  // 12: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
+	3,  // 13: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
+	11, // 14: shopsimple.product.v1.ProductService.CreateCatgory:output_type -> shopsimple.product.v1.CreateCategoryResponse
+	9,  // 15: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
+	11, // [11:16] is the sub-list for method output_type
+	6,  // [6:11] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
 	6,  // [6:6] is the sub-list for extension extendee
 	0,  // [0:6] is the sub-list for field type_name
@@ -760,7 +850,7 @@ func file_shopsimple_product_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shopsimple_product_v1_product_proto_rawDesc), len(file_shopsimple_product_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

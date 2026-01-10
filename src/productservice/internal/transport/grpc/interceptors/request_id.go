@@ -42,8 +42,7 @@ func RequestIDInterceptor() grpc.UnaryServerInterceptor {
 				attribute.String("request.id", reqID),
 			)
 		}
-
-		// ctx = context.WithValue(ctx, RequestIDKey, uuid.NewString())
+		
 		return handler(ctx, req)
 	}
 }

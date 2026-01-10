@@ -11,7 +11,7 @@ type ProductCategoryService struct {
 	repo ports.ProductCategoryRepository
 }
 
-func NewProductCategoryRepository(repo ports.ProductCategoryRepository) *ProductCategoryService {
+func NewProductCategoryService(repo ports.ProductCategoryRepository) *ProductCategoryService {
 	return &ProductCategoryService{repo: repo}
 }
 

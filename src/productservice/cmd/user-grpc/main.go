@@ -37,6 +37,7 @@ func main() {
 
 	// Infrastructure
 	productsRepo := repository.NewProductsRepository(gormDB)
+	categoriesRepo := repository.NewProductCategoryRepository(gormDB)
 	ctx := context.Background()
 	logger, _ := logging.New()
 	defer logger.Sync()
@@ -48,14 +49,19 @@ func main() {
 	defer shutdown(ctx)
 
 	// Application
-	productservice := application.Newproductservice(
+	productservice := application.NewProductservice(
 		productsRepo,
+	)
+
+	categoryservice := application.NewProductCategoryService(
+		categoriesRepo,
 	)
 
 	// Initialize server
 	server, err := grpcTransport.NewServer(
 		cfg.GRPCAddr,
 		productservice,
+		categoryservice,
 		interceptors.RequestIDInterceptor(),
 		interceptors.LoggingInterceptor(logger),
 	)
