@@ -1,0 +1,15 @@
+services: 
+  products_db: 
+    image: postgres:17-alpine
+    container_name: products-db 
+    environment:
+      POSTGRES_USER: products_db_user 
+      POSTGRES_PASSWORD: products_db_password
+      POSTGRES_DB: productssvc
+    ports: 
+      - "5432:5432"
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+
+volumes: 
+  pgdata:
