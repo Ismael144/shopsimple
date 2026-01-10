@@ -5,6 +5,7 @@ import (
 
 	"github.com/Ismael144/productservice/internal/application/ports"
 	domain "github.com/Ismael144/productservice/internal/domain/entities"
+	"github.com/Ismael144/productservice/internal/domain/valueobjects"
 )
 
 type ProductService struct {
@@ -34,5 +35,12 @@ func (p *ProductService) Filter(
 	ctx context.Context,
 	product_filters *ports.ProductFilters,
 ) ([]*domain.Product, uint32, error) {
-	return p.repo.FilterByProductFiltersObject(ctx, product_filters)
+	return p.repo.Filter(ctx, product_filters)
+}
+
+func (p *ProductService) BatchFindById(
+	ctx context.Context,
+	product_ids []*valueobjects.ProductID,
+) ([]*domain.Product, uint32, error) {
+	return p.repo.BatchFindById(ctx, product_ids)
 }

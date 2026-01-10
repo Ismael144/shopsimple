@@ -25,5 +25,6 @@ type ProductsRespository interface {
 	List(ctx context.Context, page, pageSize uint32) ([]*domain.Product, uint32, error)
 	UpdateStock(ctx context.Context, product *valueobjects.ProductID, stock int64) error
 	FindById(ctx context.Context, product_id *valueobjects.ProductID) (*domain.Product, error)
-	FilterByProductFiltersObject(ctx context.Context, product_filters *ProductFilters) ([]*domain.Product, uint32, error)
+	Filter(ctx context.Context, product_filters *ProductFilters) ([]*domain.Product, uint32, error)
+	BatchFindById(ctx context.Context, product_ids []*valueobjects.ProductID) ([]*domain.Product, uint32, error)
 }

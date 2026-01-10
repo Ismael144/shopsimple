@@ -718,6 +718,50 @@ func (*CreateCategoryResponse) Descriptor() ([]byte, []int) {
 	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{11}
 }
 
+type BatchFindByIdRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ids           []string               `protobuf:"bytes,1,rep,name=ids,proto3" json:"ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchFindByIdRequest) Reset() {
+	*x = BatchFindByIdRequest{}
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchFindByIdRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchFindByIdRequest) ProtoMessage() {}
+
+func (x *BatchFindByIdRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_shopsimple_product_v1_product_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchFindByIdRequest.ProtoReflect.Descriptor instead.
+func (*BatchFindByIdRequest) Descriptor() ([]byte, []int) {
+	return file_shopsimple_product_v1_product_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *BatchFindByIdRequest) GetIds() []string {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
 var File_shopsimple_product_v1_product_proto protoreflect.FileDescriptor
 
 const file_shopsimple_product_v1_product_proto_rawDesc = "" +
@@ -779,11 +823,14 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\x05total\x18\x02 \x01(\rR\x05total\"+\n" +
 	"\x15CreateCategoryRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"\x18\n" +
-	"\x16CreateCategoryResponse2\xeb\x03\n" +
+	"\x16CreateCategoryResponse\"(\n" +
+	"\x14BatchFindByIdRequest\x12\x10\n" +
+	"\x03ids\x18\x01 \x03(\tR\x03ids2\xce\x04\n" +
 	"\x0eProductService\x12O\n" +
 	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\x12U\n" +
 	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\x12S\n" +
-	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12m\n" +
+	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12a\n" +
+	"\rBatchFindById\x12+.shopsimple.product.v1.BatchFindByIdRequest\x1a#.shopsimple.product.v1.ListResponse\x12m\n" +
 	"\x0eCreateCategory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\x12m\n" +
 	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
 
@@ -799,7 +846,7 @@ func file_shopsimple_product_v1_product_proto_rawDescGZIP() []byte {
 	return file_shopsimple_product_v1_product_proto_rawDescData
 }
 
-var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_shopsimple_product_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*Product)(nil),                // 0: shopsimple.product.v1.Product
 	(*ProductCategory)(nil),        // 1: shopsimple.product.v1.ProductCategory
@@ -813,27 +860,30 @@ var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*ListCategoriesResponse)(nil), // 9: shopsimple.product.v1.ListCategoriesResponse
 	(*CreateCategoryRequest)(nil),  // 10: shopsimple.product.v1.CreateCategoryRequest
 	(*CreateCategoryResponse)(nil), // 11: shopsimple.product.v1.CreateCategoryResponse
-	(*timestamppb.Timestamp)(nil),  // 12: google.protobuf.Timestamp
+	(*BatchFindByIdRequest)(nil),   // 12: shopsimple.product.v1.BatchFindByIdRequest
+	(*timestamppb.Timestamp)(nil),  // 13: google.protobuf.Timestamp
 }
 var file_shopsimple_product_v1_product_proto_depIdxs = []int32{
-	12, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
-	12, // 1: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
+	13, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
+	13, // 1: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 2: shopsimple.product.v1.ListResponse.products:type_name -> shopsimple.product.v1.Product
-	12, // 3: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
+	13, // 3: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
 	7,  // 4: shopsimple.product.v1.FilterRequest.price_ranges:type_name -> shopsimple.product.v1.PriceRanges
 	1,  // 5: shopsimple.product.v1.ListCategoriesResponse.categories:type_name -> shopsimple.product.v1.ProductCategory
 	2,  // 6: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
 	4,  // 7: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
 	6,  // 8: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
-	10, // 9: shopsimple.product.v1.ProductService.CreateCategory:input_type -> shopsimple.product.v1.CreateCategoryRequest
-	8,  // 10: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
-	3,  // 11: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
-	5,  // 12: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
-	3,  // 13: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
-	11, // 14: shopsimple.product.v1.ProductService.CreateCategory:output_type -> shopsimple.product.v1.CreateCategoryResponse
-	9,  // 15: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
-	11, // [11:16] is the sub-list for method output_type
-	6,  // [6:11] is the sub-list for method input_type
+	12, // 9: shopsimple.product.v1.ProductService.BatchFindById:input_type -> shopsimple.product.v1.BatchFindByIdRequest
+	10, // 10: shopsimple.product.v1.ProductService.CreateCategory:input_type -> shopsimple.product.v1.CreateCategoryRequest
+	8,  // 11: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
+	3,  // 12: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
+	5,  // 13: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
+	3,  // 14: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
+	3,  // 15: shopsimple.product.v1.ProductService.BatchFindById:output_type -> shopsimple.product.v1.ListResponse
+	11, // 16: shopsimple.product.v1.ProductService.CreateCategory:output_type -> shopsimple.product.v1.CreateCategoryResponse
+	9,  // 17: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
+	12, // [12:18] is the sub-list for method output_type
+	6,  // [6:12] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
 	6,  // [6:6] is the sub-list for extension extendee
 	0,  // [0:6] is the sub-list for field type_name
@@ -850,7 +900,7 @@ func file_shopsimple_product_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shopsimple_product_v1_product_proto_rawDesc), len(file_shopsimple_product_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

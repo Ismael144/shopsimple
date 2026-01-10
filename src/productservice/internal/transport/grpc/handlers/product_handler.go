@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"time"
+	"fmt"
 
 	_ "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -41,6 +41,7 @@ func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (
 
 	// Convert domain products to proto products
 	protoProducts := mapper.ToProtoProducts(products)
+	fmt.Println(protoProducts)
 
 	return &productv1.ListResponse{
 		Products: protoProducts,
@@ -67,7 +68,6 @@ func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateReques
 }
 
 func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterRequest) (*productv1.ListResponse, error) {
-	fmt.Println(req.Page, req.PageSize, req.SearchString, req.Categories, req.PriceRanges)
 	// Convert category ids string to CategoryID type
 	categories := make([]valueobjects.CategoryID, 0, len(req.Categories))
 	for _, categoryID := range req.Categories {
@@ -96,6 +96,28 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 		Products: protoProducts,
 		Total:    totalCount,
 	}, nil
+}
+
+func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.BatchFindByIdRequest) (*productv1.ListResponse, error) {
+	// Convert BatchFindByIdRequest into ProductIDs 
+	product_ids := make([]*valueobjects.ProductID, 0, len(req.Ids))
+	for _, id := range req.Ids {
+		productID := valueobjects.ParseProductID(id)
+		product_ids = append(product_ids, &productID)
+	}
+
+	products, totalCount, err := h.products.BatchFindById(ctx, product_ids)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// Convert domain Products to Proto Products 
+	protoProducts := mapper.ToProtoProducts(products)
+
+	return &productv1.ListResponse{
+		Products: protoProducts, 
+		Total: totalCount, 
+	}, nil 
 }
 
 // Product Categories Services 
@@ -131,3 +153,4 @@ func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.List
 		Total:      totalCount,
 	}, nil
 }
+
