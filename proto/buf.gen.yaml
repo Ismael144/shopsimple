@@ -1,0 +1,13 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com
+plugins:
+  # Generate the messages
+  - remote: buf.build/protocolbuffers/go
+    out: ../gen/go
+  # Generate gRPC services
+  - remote: buf.build/grpc/go
+    out: ../gen/go

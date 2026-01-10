@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package shopsimple.product.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "gen/product/v1;productv1";
+
+// Products service
+service ProductService {
+  // List paginated products
+  rpc List(ListRequest) returns (ListResponse);
+  // Create New product
+  rpc Create(CreateRequest) returns (CreateResponse);
+  // Filter by properties
+  rpc Filter(FilterRequest) returns (ListResponse);
+  // Batch Find by id 
+  rpc BatchFindById(BatchFindByIdRequest) returns (ListResponse); 
+
+  // Create Product Category
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse);
+  // List Categories
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+}
+
+message Product {
+  string                    id          = 1;
+  string                    name        = 2;
+  string                    description = 3;
+  double                    unit_price  = 4;
+  string                    image_url   = 5;
+  uint64                    stock       = 6;
+  string                    category_id = 7;
+  google.protobuf.Timestamp created_at  = 8;
+}
+
+message ProductCategory {
+  string                    id         = 1;
+  string                    name       = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+message ListRequest {
+  uint32 page      = 1;
+  uint32 page_size = 2;
+}
+
+message ListResponse {
+  repeated Product products = 1;
+  uint32           total    = 2;
+}
+
+message CreateRequest {
+  string                    name        = 1;
+  string                    description = 2;
+  float                     unit_price  = 3;
+  string                    image_url   = 4;
+  uint32                    stock       = 5;
+  string                    category_id = 6;
+  google.protobuf.Timestamp created_at  = 7;
+}
+
+message CreateResponse {
+  string product_id = 1;
+}
+
+message FilterRequest {
+  uint32          page          = 1;
+  uint32          page_size     = 2;
+  string          search_string = 3;
+  repeated string categories    = 4;
+  PriceRanges     price_ranges  = 5;
+}
+
+message PriceRanges {
+  float min = 1;
+  float max = 2;
+}
+
+message ListCategoriesRequest {}
+
+message ListCategoriesResponse {
+  repeated ProductCategory categories = 1;
+  uint32                   total              = 2;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+}
+
+message CreateCategoryResponse {}
+
+message BatchFindByIdRequest {
+  repeated string ids  = 1; 
+}
