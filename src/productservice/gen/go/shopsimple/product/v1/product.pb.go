@@ -7,6 +7,7 @@
 package productv1
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -766,7 +767,7 @@ var File_shopsimple_product_v1_product_proto protoreflect.FileDescriptor
 
 const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfd\x01\n" +
+	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xfd\x01\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -825,14 +826,17 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"\x18\n" +
 	"\x16CreateCategoryResponse\"(\n" +
 	"\x14BatchFindByIdRequest\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\tR\x03ids2\xce\x04\n" +
-	"\x0eProductService\x12O\n" +
-	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\x12U\n" +
-	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\x12S\n" +
-	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\x12a\n" +
-	"\rBatchFindById\x12+.shopsimple.product.v1.BatchFindByIdRequest\x1a#.shopsimple.product.v1.ListResponse\x12m\n" +
-	"\x0eCreateCategory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\x12m\n" +
-	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponseB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
+	"\x03ids\x18\x01 \x03(\tR\x03ids2\xec\x05\n" +
+	"\x0eProductService\x12a\n" +
+	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
+	"\x12\b/v1/list\x12l\n" +
+	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
+	"/v1/create\x12g\n" +
+	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\"\x12\x82\xd3\xe4\x93\x02\f\x12\n" +
+	"/v1/filter\x12\x82\x01\n" +
+	"\rBatchFindById\x12+.shopsimple.product.v1.BatchFindByIdRequest\x1a#.shopsimple.product.v1.ListResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/batch_find_by_id\x12\x8d\x01\n" +
+	"\x0eCreateCategory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1/create_category\x12\x8a\x01\n" +
+	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/list_categoriesB\x1aZ\x18gen/product/v1;productv1b\x06proto3"
 
 var (
 	file_shopsimple_product_v1_product_proto_rawDescOnce sync.Once

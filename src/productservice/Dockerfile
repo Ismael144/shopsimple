@@ -9,13 +9,14 @@ RUN go mod download
 
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \ 
-    go build -o product-service ./cmd/user-grpc
+    go build -o product-service ./cmd/grpc
 
 # ========= Runtime Stage ============
 FROM gcr.io/distroless/base-debian12
 
 WORKDIR /app 
 
+COPY --from=builder /app/.env /app
 COPY --from=builder /app/product-service /app/product-service
 
 EXPOSE 50051

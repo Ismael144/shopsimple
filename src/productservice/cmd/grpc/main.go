@@ -13,6 +13,8 @@ import (
 	"github.com/Ismael144/productservice/internal/infrastructure/db"
 	"github.com/Ismael144/productservice/internal/infrastructure/logging"
 	"github.com/Ismael144/productservice/internal/infrastructure/repository"
+	"github.com/Ismael144/productservice/internal/infrastructure/repository/product"
+	"github.com/Ismael144/productservice/internal/infrastructure/repository/product_category"
 	"github.com/Ismael144/productservice/internal/infrastructure/telemetry"
 	grpcTransport "github.com/Ismael144/productservice/internal/transport/grpc"
 	"github.com/Ismael144/productservice/internal/transport/grpc/interceptors"
@@ -24,7 +26,7 @@ func main() {
 	// Load env
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file...")
 	}
 
 	cfg := config.LoadConfig()
@@ -35,6 +37,9 @@ func main() {
 		log.Fatalf("failed to connect to postgres: %v", err)
 	}
 
+	// Auto Migrate Models
+	gormDB.AutoMigrate(&product.ProductModel{}, &product_category.ProductCategoryModel{})
+
 	// Infrastructure
 	productsRepo := repository.NewProductsRepository(gormDB)
 	categoriesRepo := repository.NewProductCategoryRepository(gormDB)
@@ -42,7 +47,7 @@ func main() {
 	logger, _ := logging.New()
 	defer logger.Sync()
 
-	shutdown, err := telemetry.InitTracer("product-service")
+	shutdown, err := telemetry.InitTracer("product-service", cfg.JaegarUrl)
 	if err != nil {
 		logger.Fatal("failed to init tracer", zap.Error(err))
 	}

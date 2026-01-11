@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package cart.v1;
+
+import "google/protobuf/timestamp.proto";
+import "shopsimple/product/v1/product.proto";
+import "shopsimple/common/v1/money.proto";
+
+option go_package = "gen/cart/v1;cartv1";
+
+service CartService {
+  // Add product to cart
+  rpc AddItem(AddToCartRequest) returns (AddToCartResponse);
+  // Get items in cart
+  rpc GetCart(GetCartRequest) returns (GetCartResponse);
+}
+
+message Cart {
+  string            user_id          = 1;
+  repeated CartItem cart_items       = 2;
+  float             cart_price_total = 3;
+}
+
+message CartItem {
+  string id           = 1;
+  string product_id   = 2;
+  uint32 quantity     = 3;
+  string product_name = 4;
+  Money  unit_price   = 5;
+}
+
+message AddToCartRequest {
+  string user_id    = 1;
+  string product_id = 2;
+  string quantity   = 3;
+}
+
+message AddToCartResponse {
+  string product_id = 1;
+}
+
+message GetCartRequest {
+  string user_id = 1;
+}
+
+message GetCartResponse {
+  Cart cart = 1;
+}

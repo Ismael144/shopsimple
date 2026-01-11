@@ -10,10 +10,10 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 )
 
-func InitTracer(serviceName string) (func(context.Context) error, error) {
+func InitTracer(serviceName, jaegar_url string) (func(context.Context) error, error) {
 	exp, err := jaeger.New(
 		jaeger.WithCollectorEndpoint(
-			jaeger.WithEndpoint("http://localhost:14268/api/traces"),
+			jaeger.WithEndpoint(jaegar_url),
 		),
 	)
 

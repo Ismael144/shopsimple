@@ -8,12 +8,14 @@ import (
 type Config struct {
 	GRPCAddr    string
 	DatabaseURL string
+	JaegarUrl string 
 }
 
 func LoadConfig() Config {
 	return Config{
 		GRPCAddr:    getEnv("GRPC_ADDR", ":50051"),
 		DatabaseURL: mustEnv("DATABASE_URL"),
+		JaegarUrl: mustEnv("JAEGER_URL"),
 	}
 }
 

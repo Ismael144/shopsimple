@@ -3,24 +3,57 @@ syntax = "proto3";
 package shopsimple.product.v1;
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto"; 
 
 option go_package = "gen/product/v1;productv1";
 
 // Products service
 service ProductService {
   // List paginated products
-  rpc List(ListRequest) returns (ListResponse);
+  rpc List(ListRequest) returns (ListResponse) {
+    option (google.api.http) = {
+      get: "/v1/list"
+    };
+  };
+
   // Create New product
-  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc Create(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post: "/v1/create"
+      body: "*"
+    };
+  };
+
   // Filter by properties
-  rpc Filter(FilterRequest) returns (ListResponse);
-  // Batch Find by id 
-  rpc BatchFindById(BatchFindByIdRequest) returns (ListResponse); 
+  rpc Filter(FilterRequest) returns (ListResponse) {
+    option (google.api.http) = {
+      get: "/v1/filter"
+    };
+  };
+
+  // Batch Find by id
+  rpc BatchFindById(BatchFindByIdRequest) returns (ListResponse) {
+    option (google.api.http) = {
+      post: "/v1/batch_find_by_id"
+      body: "*"
+    };
+  };
 
   // Create Product Category
-  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse);
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/create_category"
+      body: "*"
+
+    };
+  };
+
   // List Categories
-  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
+    option (google.api.http) = {
+      get: "/v1/list_categories"
+    };
+  };
 }
 
 message Product {
@@ -81,7 +114,7 @@ message ListCategoriesRequest {}
 
 message ListCategoriesResponse {
   repeated ProductCategory categories = 1;
-  uint32                   total              = 2;
+  uint32                   total      = 2;
 }
 
 message CreateCategoryRequest {
@@ -91,5 +124,5 @@ message CreateCategoryRequest {
 message CreateCategoryResponse {}
 
 message BatchFindByIdRequest {
-  repeated string ids  = 1; 
+  repeated string ids = 1;
 }
