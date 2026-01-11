@@ -8,4 +8,6 @@ require (
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/redis/go-redis/v9 v9.17.2 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
+	go.uber.org/zap v1.27.1 // indirect
 )
