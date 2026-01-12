@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-option go_package = "gen/common/v1;commonv1";
+package money.v1;
+
+option go_package = "gen/go/shopsimple/common/v1;commonv1";
 
 message Money {
   int64 cents = 1;

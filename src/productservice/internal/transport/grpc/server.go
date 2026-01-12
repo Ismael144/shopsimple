@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"net"
+	"time"
 
 	productv1 "github.com/Ismael144/productservice/gen/go/shopsimple/product/v1"
 	"github.com/Ismael144/productservice/internal/application"
@@ -36,8 +37,9 @@ func NewServer(
 	server := grpc.NewServer(
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
-			unaryInterceptors...
+			unaryInterceptors...,
 		),
+		grpc.ConnectionTimeout(5*time.Second),
 	)
 
 	// Product Service

@@ -29,6 +29,7 @@ func main() {
 		log.Fatal("Error loading .env file...")
 	}
 
+	ctx := context.Background()
 	cfg := config.LoadConfig()
 
 	// Database
@@ -43,11 +44,10 @@ func main() {
 	// Infrastructure
 	productsRepo := repository.NewProductsRepository(gormDB)
 	categoriesRepo := repository.NewProductCategoryRepository(gormDB)
-	ctx := context.Background()
 	logger, _ := logging.New()
 	defer logger.Sync()
 
-	shutdown, err := telemetry.InitTracer("product-service", cfg.JaegarUrl)
+	shutdown, err := telemetry.InitTracer("product-service", cfg.JaegerURL)
 	if err != nil {
 		logger.Fatal("failed to init tracer", zap.Error(err))
 	}

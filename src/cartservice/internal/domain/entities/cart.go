@@ -1,23 +1,23 @@
 package entities
 
 import (
+	"encoding/json"
 	"slices"
 
+	"github.com"
 	"github.com/Ismael144/cartservice/internal/domain"
 	"github.com/Ismael144/cartservice/internal/domain/valueobjects"
 )
 
 type Cart struct {
-	UserID         valueobjects.UserID
-	Items          []*CartItem
-	cartTotal valueobjects.Money
+	UserID valueobjects.UserID `json:"user_id"`
+	Items  []*CartItem         `json:"items"`
 }
 
 func NewCart(UserID valueobjects.UserID) *Cart {
 	return &Cart{
-		UserID:         UserID,
-		Items:          []*CartItem{},
-		cartTotal: valueobjects.MoneyFromCents(0),
+		UserID: UserID,
+		Items:  []*CartItem{},
 	}
 }
 
@@ -38,8 +38,20 @@ func (cart *Cart) AddToCart(CartItem *CartItem) error {
 	return nil
 }
 
-func (cart *Cart) Total() valueobjects.Money {
-	total := valueobjects.Money{Cents: 0}
+func (cart *Cart) DeductFromCart(productID valueobjects.ProductID, Quantity uint32) {
+	for i, existing := range cart.Items {
+		if existing.ProductID == productID {
+			if existing.Quantity <= Quantity {
+				cart.RemoveItem(existing.ProductID)
+			} else {
+				cart.Items[i].Quantity -= Quantity
+			}
+		}
+	}
+}
+
+func (cart *Cart) Total() common.Money {
+	total := common.Money{Cents: 0}
 	for _, item := range cart.Items {
 		total = total.Add(item.UnitPrice.Mul(int64(item.Quantity)))
 	}
@@ -54,4 +66,18 @@ func (cart *Cart) RemoveItem(productID valueobjects.ProductID) {
 			return
 		}
 	}
+}
+
+func UnmarshalCart(cartJson string) (*Cart, error) {
+	var cart Cart
+	err := json.Unmarshal([]byte(cartJson), &cart)
+	return &cart, err
+}
+
+func (cart *Cart) Marshal() (string, error) {
+	cartJson, err := json.Marshal(cart)
+	if err != nil {
+		return "", err
+	}
+	return string(cartJson), nil
 }

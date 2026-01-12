@@ -147,7 +147,7 @@ func (r *ProductsRepository) BatchFindById(ctx context.Context, product_ids []*v
 
 	query := r.db.WithContext(ctx).
 		Model(&product.ProductModel{})
-		
+
 	// Find multiple items by id in db
 	query = query.Find(&models, "id IN ?", product_ids_string)
 

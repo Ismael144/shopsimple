@@ -1,4 +1,10 @@
 version: v2
+managed: 
+  enabled: true 
+  override: 
+    - file_option: go_package_prefix 
+      value: github.com/Ismael144/productservice/gen/go
+      module: buf.build/shopsimple/shopsimple
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: gen/go

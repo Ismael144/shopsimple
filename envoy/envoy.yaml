@@ -23,6 +23,11 @@ static_resources:
                           route:
                             cluster: productservice
                             prefix_rewrite: "/" 
+                        # - match:
+                        #     prefix: "/"
+                        #   route:
+                        #     cluster: cartservice
+                        #     prefix_rewrite: "/" 
                 http_filters:
                   - name: envoy.filters.http.grpc_json_transcoder
                     typed_config:

@@ -5,9 +5,11 @@ import (
 	"time"
 )
 
-func NewRedis(addr, password, db string) *redis.Client {
+func NewRedis(addr string) *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr: addr,
+		Addr:     addr,
+		Password: "",
+		DB:       0,
 
 		// Retry config
 		MaxRetries:      3,

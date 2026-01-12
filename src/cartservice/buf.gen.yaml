@@ -1,0 +1,14 @@
+version: v2
+managed: 
+  enabled: true 
+  override: 
+    - file_option: go_package_prefix
+      value: github.com/Ismael144/cartservice/gen/go
+      module: buf.build/shopsimple/shopsimple
+plugins: 
+  - remote: buf.build/protocolbuffers/go
+    out: gen/go
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: gen/go
+    opt: paths=source_relative

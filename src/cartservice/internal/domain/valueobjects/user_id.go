@@ -7,5 +7,9 @@ func ParseUserID(id string) UserID {
 }
 
 func (u UserID) String() string {
-	return u.String()
+	return string(u)
+}
+
+func (u UserID) Key() string {
+	return ":cart" + string(u)
 }

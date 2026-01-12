@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"context"
-	"time"
 	"fmt"
+	"time"
 
 	_ "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -99,7 +99,7 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 }
 
 func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.BatchFindByIdRequest) (*productv1.ListResponse, error) {
-	// Convert BatchFindByIdRequest into ProductIDs 
+	// Convert BatchFindByIdRequest into ProductIDs
 	product_ids := make([]*valueobjects.ProductID, 0, len(req.Ids))
 	for _, id := range req.Ids {
 		productID := valueobjects.ParseProductID(id)
@@ -111,16 +111,27 @@ func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.Batch
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	// Convert domain Products to Proto Products 
+	// Convert domain Products to Proto Products
 	protoProducts := mapper.ToProtoProducts(products)
 
 	return &productv1.ListResponse{
-		Products: protoProducts, 
-		Total: totalCount, 
-	}, nil 
+		Products: protoProducts,
+		Total:    totalCount,
+	}, nil
 }
 
-// Product Categories Services 
+func (h *ProductHandler) FindById(ctx context.Context, req *productv1.FindByIdRequest) (*productv1.Product, error) {
+	product, err := h.products.FindById(ctx, req.Id)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return mapper.ToProtoProduct(product), nil
+}
+
+// ================================
+// Product Categories Services
+// ================================
 
 func (c *ProductHandler) CreateCategory(ctx context.Context, req *productv1.CreateCategoryRequest) (*productv1.CreateCategoryResponse, error) {
 	categoryDomain := domain.NewProductCategory(req.Name, time.Now())
@@ -142,8 +153,8 @@ func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.List
 	grpcCategories := make([]*productv1.ProductCategory, 0, len(categories))
 	for _, category := range categories {
 		grpcCategories = append(grpcCategories, &productv1.ProductCategory{
-			Id: category.ID.String(),
-			Name: category.Name,
+			Id:        category.ID.String(),
+			Name:      category.Name,
 			CreatedAt: timestamppb.New(category.CreatedAt),
 		})
 	}
@@ -153,4 +164,3 @@ func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.List
 		Total:      totalCount,
 	}, nil
 }
-

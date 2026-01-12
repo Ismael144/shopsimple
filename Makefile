@@ -9,9 +9,9 @@ GO_VERSION ?= 1.25
 
 .PHONY: bufpush descriptor envoy build up clean  
 
-bufpush:  
+buf:  
 	cd $(PROTO_DIR) && buf push 
-descriptor: bufpush
+descriptor: buf
 	cd $(PROTO_DIR) && buf build -o ../$(ENVOY_DESCRIPTOR)
 envoy: descriptor 
 	docker compose build $(ENVOY_COMPOSE_LABEL) && docker compose up $(ENVOY_COMPOSE_LABEL) -d 

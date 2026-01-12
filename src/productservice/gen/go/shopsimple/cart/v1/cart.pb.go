@@ -86,7 +86,6 @@ func (x *Cart) GetCartPriceTotal() float32 {
 
 type CartItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ProductId     string                 `protobuf:"bytes,2,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	Quantity      uint32                 `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	ProductName   string                 `protobuf:"bytes,4,opt,name=product_name,json=productName,proto3" json:"product_name,omitempty"`
@@ -123,13 +122,6 @@ func (x *CartItem) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CartItem.ProtoReflect.Descriptor instead.
 func (*CartItem) Descriptor() ([]byte, []int) {
 	return file_shopsimple_cart_v1_cart_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CartItem) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 func (x *CartItem) GetProductId() string {
@@ -361,9 +353,8 @@ const file_shopsimple_cart_v1_cart_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x120\n" +
 	"\n" +
 	"cart_items\x18\x02 \x03(\v2\x11.cart.v1.CartItemR\tcartItems\x12(\n" +
-	"\x10cart_price_total\x18\x03 \x01(\x02R\x0ecartPriceTotal\"\x9f\x01\n" +
-	"\bCartItem\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\x10cart_price_total\x18\x03 \x01(\x02R\x0ecartPriceTotal\"\x8f\x01\n" +
+	"\bCartItem\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x02 \x01(\tR\tproductId\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\rR\bquantity\x12!\n" +

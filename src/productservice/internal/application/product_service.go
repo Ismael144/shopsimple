@@ -38,6 +38,13 @@ func (p *ProductService) Filter(
 	return p.repo.Filter(ctx, product_filters)
 }
 
+func (p *ProductService) FindById(
+	ctx context.Context, 
+	product_id string, 
+) (*domain.Product, error) {
+	return p.repo.FindById(ctx, (*valueobjects.ProductID)(&product_id))
+}
+
 func (p *ProductService) BatchFindById(
 	ctx context.Context,
 	product_ids []*valueobjects.ProductID,
