@@ -7,8 +7,8 @@
 package cartv1
 
 import (
-	v1 "gen/common/v1"
-	_ "gen/product/v1"
+	v1 "github.com/Ismael144/productservice/gen/go/shopsimple/common/v1"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
@@ -156,7 +156,7 @@ type AddToCartRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ProductId     string                 `protobuf:"bytes,2,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	Quantity      string                 `protobuf:"bytes,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Quantity      uint32                 `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -205,11 +205,11 @@ func (x *AddToCartRequest) GetProductId() string {
 	return ""
 }
 
-func (x *AddToCartRequest) GetQuantity() string {
+func (x *AddToCartRequest) GetQuantity() uint32 {
 	if x != nil {
 		return x.Quantity
 	}
-	return ""
+	return 0
 }
 
 type AddToCartResponse struct {
@@ -348,34 +348,35 @@ var File_shopsimple_cart_v1_cart_proto protoreflect.FileDescriptor
 
 const file_shopsimple_cart_v1_cart_proto_rawDesc = "" +
 	"\n" +
-	"\x1dshopsimple/cart/v1/cart.proto\x12\acart.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a#shopsimple/product/v1/product.proto\x1a shopsimple/common/v1/money.proto\"{\n" +
+	"\x1dshopsimple/cart/v1/cart.proto\x12\acart.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a shopsimple/common/v1/money.proto\"{\n" +
 	"\x04Cart\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x120\n" +
 	"\n" +
 	"cart_items\x18\x02 \x03(\v2\x11.cart.v1.CartItemR\tcartItems\x12(\n" +
-	"\x10cart_price_total\x18\x03 \x01(\x02R\x0ecartPriceTotal\"\x8f\x01\n" +
+	"\x10cart_price_total\x18\x03 \x01(\x02R\x0ecartPriceTotal\"\x98\x01\n" +
 	"\bCartItem\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x02 \x01(\tR\tproductId\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\rR\bquantity\x12!\n" +
-	"\fproduct_name\x18\x04 \x01(\tR\vproductName\x12%\n" +
+	"\fproduct_name\x18\x04 \x01(\tR\vproductName\x12.\n" +
 	"\n" +
-	"unit_price\x18\x05 \x01(\v2\x06.MoneyR\tunitPrice\"f\n" +
+	"unit_price\x18\x05 \x01(\v2\x0f.money.v1.MoneyR\tunitPrice\"f\n" +
 	"\x10AddToCartRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x02 \x01(\tR\tproductId\x12\x1a\n" +
-	"\bquantity\x18\x03 \x01(\tR\bquantity\"2\n" +
+	"\bquantity\x18\x03 \x01(\rR\bquantity\"2\n" +
 	"\x11AddToCartResponse\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\")\n" +
 	"\x0eGetCartRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"4\n" +
 	"\x0fGetCartResponse\x12!\n" +
-	"\x04cart\x18\x01 \x01(\v2\r.cart.v1.CartR\x04cart2\x8d\x01\n" +
-	"\vCartService\x12@\n" +
-	"\aAddItem\x12\x19.cart.v1.AddToCartRequest\x1a\x1a.cart.v1.AddToCartResponse\x12<\n" +
-	"\aGetCart\x12\x17.cart.v1.GetCartRequest\x1a\x18.cart.v1.GetCartResponseB\x14Z\x12gen/cart/v1;cartv1b\x06proto3"
+	"\x04cart\x18\x01 \x01(\v2\r.cart.v1.CartR\x04cart2\xb6\x01\n" +
+	"\vCartService\x12X\n" +
+	"\aAddItem\x12\x19.cart.v1.AddToCartRequest\x1a\x1a.cart.v1.AddToCartResponse\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\vcart/v1/add\x12M\n" +
+	"\aGetCart\x12\x17.cart.v1.GetCartRequest\x1a\x18.cart.v1.GetCartResponse\"\x0f\x82\xd3\xe4\x93\x02\t\x12\acart/v1B\x9b\x01\n" +
+	"\vcom.cart.v1B\tCartProtoP\x01ZDgithub.com/Ismael144/productservice/gen/go/shopsimple/cart/v1;cartv1\xa2\x02\x03CXX\xaa\x02\aCart.V1\xca\x02\aCart\\V1\xe2\x02\x13Cart\\V1\\GPBMetadata\xea\x02\bCart::V1b\x06proto3"
 
 var (
 	file_shopsimple_cart_v1_cart_proto_rawDescOnce sync.Once
@@ -397,11 +398,11 @@ var file_shopsimple_cart_v1_cart_proto_goTypes = []any{
 	(*AddToCartResponse)(nil), // 3: cart.v1.AddToCartResponse
 	(*GetCartRequest)(nil),    // 4: cart.v1.GetCartRequest
 	(*GetCartResponse)(nil),   // 5: cart.v1.GetCartResponse
-	(*v1.Money)(nil),          // 6: Money
+	(*v1.Money)(nil),          // 6: money.v1.Money
 }
 var file_shopsimple_cart_v1_cart_proto_depIdxs = []int32{
 	1, // 0: cart.v1.Cart.cart_items:type_name -> cart.v1.CartItem
-	6, // 1: cart.v1.CartItem.unit_price:type_name -> Money
+	6, // 1: cart.v1.CartItem.unit_price:type_name -> money.v1.Money
 	0, // 2: cart.v1.GetCartResponse.cart:type_name -> cart.v1.Cart
 	2, // 3: cart.v1.CartService.AddItem:input_type -> cart.v1.AddToCartRequest
 	4, // 4: cart.v1.CartService.GetCart:input_type -> cart.v1.GetCartRequest

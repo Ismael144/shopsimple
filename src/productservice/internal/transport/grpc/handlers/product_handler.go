@@ -54,7 +54,7 @@ func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateReques
 		ID:          valueobjects.NewProductID(),
 		Name:        req.Name,
 		Description: req.Description,
-		UnitPrice:   float64(req.UnitPrice),
+		UnitPrice:   valueobjects.MoneyFromCents(int64(req.UnitPrice)),
 		Stock:       int64(req.Stock),
 		CategoryID:  valueobjects.CategoryID(req.CategoryId),
 		CreatedAt:   time.Now(),

@@ -2,16 +2,34 @@ syntax = "proto3";
 
 package cart.v1;
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "shopsimple/common/v1/money.proto";
 
 option go_package = "gen/go/shopsimple/cart/v1;cartv1";
 
+// Cart service including all operations on user cart
 service CartService {
   // Add product to cart
-  rpc AddItem(AddToCartRequest) returns (AddToCartResponse) {
+  rpc AddItem(ModifyCartRequest) returns (ModifyCartResponse) {
     option (google.api.http) = {
       post: "cart/v1/add"
+      body: "*"
+    };
+  };
+
+  // Deduct quantity from cart
+  rpc DeductFromCart(ModifyCartRequest) returns (ModifyCartResponse) {
+    option (google.api.http) = {
+      post: "cart/v1/deduct"
+      body: "*"
+    };
+  };
+
+  // Remove item from cart
+  rpc RemoveFromCart(RemoveFromCartRequest) returns (ModifyCartResponse) {
+    option (google.api.http) = {
+      post: "cart/v1/deduct"
       body: "*"
     };
   };
@@ -22,12 +40,28 @@ service CartService {
       get: "cart/v1"
     };
   };
+
+  // Clear items in the cart
+  rpc Clear(GetCartRequest) returns (ModifyCartResponse) {
+    option (google.api.http) = {
+      post: "cart/v1/clear"
+      body: "*"
+    };
+  }
+
+  // Swaps cart from guest user id to authenticated user id
+  rpc AssignToAuthUser(AssignToAuthUserRequest) returns (AssignToAuthUserResponse) {
+    option (google.api.http) = {
+      post: "cart/v1/swap"
+      body: "*"
+    };
+  };
 }
 
 message Cart {
   string            user_id          = 1;
   repeated CartItem cart_items       = 2;
-  float             cart_price_total = 3;
+  money.v1.Money    cart_price_total = 3;
 }
 
 message CartItem {
@@ -37,14 +71,19 @@ message CartItem {
   money.v1.Money unit_price   = 5;
 }
 
-message AddToCartRequest {
+message ModifyCartRequest {
   string user_id    = 1;
   string product_id = 2;
   uint32 quantity   = 3;
 }
 
-message AddToCartResponse {
+message ModifyCartResponse {
   string product_id = 1;
+}
+
+message RemoveFromCartRequest {
+  string user_id    = 1;
+  string product_id = 2;
 }
 
 message GetCartRequest {
@@ -53,4 +92,13 @@ message GetCartRequest {
 
 message GetCartResponse {
   Cart cart = 1;
+}
+
+message AssignToAuthUserRequest {
+  string guest_user_id = 1;
+  string auth_user_id  = 2;
+}
+
+message AssignToAuthUserResponse {
+  string auth_user_id = 1;
 }

@@ -7,6 +7,7 @@
 package productv1
 
 import (
+	v1 "github.com/Ismael144/cartservice/gen/go/shopsimple/common/v1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -28,7 +29,7 @@ type Product struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	UnitPrice     float64                `protobuf:"fixed64,4,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
+	UnitPrice     *v1.Money              `protobuf:"bytes,4,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
 	ImageUrl      string                 `protobuf:"bytes,5,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	Stock         uint64                 `protobuf:"varint,6,opt,name=stock,proto3" json:"stock,omitempty"`
 	CategoryId    string                 `protobuf:"bytes,7,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
@@ -88,11 +89,11 @@ func (x *Product) GetDescription() string {
 	return ""
 }
 
-func (x *Product) GetUnitPrice() float64 {
+func (x *Product) GetUnitPrice() *v1.Money {
 	if x != nil {
 		return x.UnitPrice
 	}
-	return 0
+	return nil
 }
 
 func (x *Product) GetImageUrl() string {
@@ -291,7 +292,7 @@ type CreateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	UnitPrice     float32                `protobuf:"fixed32,3,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
+	UnitPrice     int64                  `protobuf:"varint,3,opt,name=unit_price,json=unitPrice,proto3" json:"unit_price,omitempty"`
 	ImageUrl      string                 `protobuf:"bytes,4,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	Stock         uint32                 `protobuf:"varint,5,opt,name=stock,proto3" json:"stock,omitempty"`
 	CategoryId    string                 `protobuf:"bytes,6,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
@@ -344,7 +345,7 @@ func (x *CreateRequest) GetDescription() string {
 	return ""
 }
 
-func (x *CreateRequest) GetUnitPrice() float32 {
+func (x *CreateRequest) GetUnitPrice() int64 {
 	if x != nil {
 		return x.UnitPrice
 	}
@@ -811,13 +812,13 @@ var File_shopsimple_product_v1_product_proto protoreflect.FileDescriptor
 
 const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfd\x01\n" +
+	"#shopsimple/product/v1/product.proto\x12\x15shopsimple.product.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a shopsimple/common/v1/money.proto\"\x8e\x02\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1d\n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12.\n" +
 	"\n" +
-	"unit_price\x18\x04 \x01(\x01R\tunitPrice\x12\x1b\n" +
+	"unit_price\x18\x04 \x01(\v2\x0f.money.v1.MoneyR\tunitPrice\x12\x1b\n" +
 	"\timage_url\x18\x05 \x01(\tR\bimageUrl\x12\x14\n" +
 	"\x05stock\x18\x06 \x01(\x04R\x05stock\x12\x1f\n" +
 	"\vcategory_id\x18\a \x01(\tR\n" +
@@ -839,7 +840,7 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x1d\n" +
 	"\n" +
-	"unit_price\x18\x03 \x01(\x02R\tunitPrice\x12\x1b\n" +
+	"unit_price\x18\x03 \x01(\x03R\tunitPrice\x12\x1b\n" +
 	"\timage_url\x18\x04 \x01(\tR\bimageUrl\x12\x14\n" +
 	"\x05stock\x18\x05 \x01(\rR\x05stock\x12\x1f\n" +
 	"\vcategory_id\x18\x06 \x01(\tR\n" +
@@ -872,13 +873,13 @@ const file_shopsimple_product_v1_product_proto_rawDesc = "" +
 	"\x05total\x18\x02 \x01(\rR\x05total\"+\n" +
 	"\x15CreateCategoryRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"\x18\n" +
-	"\x16CreateCategoryResponse2\x8d\a\n" +
+	"\x16CreateCategoryResponse2\x8c\a\n" +
 	"\x0eProductService\x12j\n" +
 	"\x04List\x12\".shopsimple.product.v1.ListRequest\x1a#.shopsimple.product.v1.ListResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/products/v1/list\x12u\n" +
 	"\x06Create\x12$.shopsimple.product.v1.CreateRequest\x1a%.shopsimple.product.v1.CreateResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/products/v1/create\x12p\n" +
 	"\x06Filter\x12$.shopsimple.product.v1.FilterRequest\x1a#.shopsimple.product.v1.ListResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/products/v1/filter\x12\x8b\x01\n" +
-	"\rBatchFindById\x12+.shopsimple.product.v1.BatchFindByIdRequest\x1a#.shopsimple.product.v1.ListResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/products/v1/batch-find-by-id\x12i\n" +
-	"\bFindById\x12&.shopsimple.product.v1.FindByIdRequest\x1a\x1e.shopsimple.product.v1.Product\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/products/v1/\x12\x96\x01\n" +
+	"\rBatchFindById\x12+.shopsimple.product.v1.BatchFindByIdRequest\x1a#.shopsimple.product.v1.ListResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/products/v1/batch-find-by-id\x12h\n" +
+	"\bFindById\x12&.shopsimple.product.v1.FindByIdRequest\x1a\x1e.shopsimple.product.v1.Product\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/products/v1\x12\x96\x01\n" +
 	"\x0eCreateCategory\x12,.shopsimple.product.v1.CreateCategoryRequest\x1a-.shopsimple.product.v1.CreateCategoryResponse\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/products/v1/create_category\x12\x93\x01\n" +
 	"\x0eListCategories\x12,.shopsimple.product.v1.ListCategoriesRequest\x1a-.shopsimple.product.v1.ListCategoriesResponse\"$\x82\xd3\xe4\x93\x02\x1e\x12\x1c/products/v1/list_categoriesB\xe8\x01\n" +
 	"\x19com.shopsimple.product.v1B\fProductProtoP\x01ZGgithub.com/Ismael144/cartservice/gen/go/shopsimple/product/v1;productv1\xa2\x02\x03SPX\xaa\x02\x15Shopsimple.Product.V1\xca\x02\x15Shopsimple\\Product\\V1\xe2\x02!Shopsimple\\Product\\V1\\GPBMetadata\xea\x02\x17Shopsimple::Product::V1b\x06proto3"
@@ -911,34 +912,36 @@ var file_shopsimple_product_v1_product_proto_goTypes = []any{
 	(*ListCategoriesResponse)(nil), // 11: shopsimple.product.v1.ListCategoriesResponse
 	(*CreateCategoryRequest)(nil),  // 12: shopsimple.product.v1.CreateCategoryRequest
 	(*CreateCategoryResponse)(nil), // 13: shopsimple.product.v1.CreateCategoryResponse
-	(*timestamppb.Timestamp)(nil),  // 14: google.protobuf.Timestamp
+	(*v1.Money)(nil),               // 14: money.v1.Money
+	(*timestamppb.Timestamp)(nil),  // 15: google.protobuf.Timestamp
 }
 var file_shopsimple_product_v1_product_proto_depIdxs = []int32{
-	14, // 0: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
-	14, // 1: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 2: shopsimple.product.v1.ListResponse.products:type_name -> shopsimple.product.v1.Product
-	14, // 3: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
-	7,  // 4: shopsimple.product.v1.FilterRequest.price_ranges:type_name -> shopsimple.product.v1.PriceRanges
-	1,  // 5: shopsimple.product.v1.ListCategoriesResponse.categories:type_name -> shopsimple.product.v1.ProductCategory
-	2,  // 6: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
-	4,  // 7: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
-	6,  // 8: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
-	8,  // 9: shopsimple.product.v1.ProductService.BatchFindById:input_type -> shopsimple.product.v1.BatchFindByIdRequest
-	9,  // 10: shopsimple.product.v1.ProductService.FindById:input_type -> shopsimple.product.v1.FindByIdRequest
-	12, // 11: shopsimple.product.v1.ProductService.CreateCategory:input_type -> shopsimple.product.v1.CreateCategoryRequest
-	10, // 12: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
-	3,  // 13: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
-	5,  // 14: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
-	3,  // 15: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
-	3,  // 16: shopsimple.product.v1.ProductService.BatchFindById:output_type -> shopsimple.product.v1.ListResponse
-	0,  // 17: shopsimple.product.v1.ProductService.FindById:output_type -> shopsimple.product.v1.Product
-	13, // 18: shopsimple.product.v1.ProductService.CreateCategory:output_type -> shopsimple.product.v1.CreateCategoryResponse
-	11, // 19: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
-	13, // [13:20] is the sub-list for method output_type
-	6,  // [6:13] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	14, // 0: shopsimple.product.v1.Product.unit_price:type_name -> money.v1.Money
+	15, // 1: shopsimple.product.v1.Product.created_at:type_name -> google.protobuf.Timestamp
+	15, // 2: shopsimple.product.v1.ProductCategory.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 3: shopsimple.product.v1.ListResponse.products:type_name -> shopsimple.product.v1.Product
+	15, // 4: shopsimple.product.v1.CreateRequest.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 5: shopsimple.product.v1.FilterRequest.price_ranges:type_name -> shopsimple.product.v1.PriceRanges
+	1,  // 6: shopsimple.product.v1.ListCategoriesResponse.categories:type_name -> shopsimple.product.v1.ProductCategory
+	2,  // 7: shopsimple.product.v1.ProductService.List:input_type -> shopsimple.product.v1.ListRequest
+	4,  // 8: shopsimple.product.v1.ProductService.Create:input_type -> shopsimple.product.v1.CreateRequest
+	6,  // 9: shopsimple.product.v1.ProductService.Filter:input_type -> shopsimple.product.v1.FilterRequest
+	8,  // 10: shopsimple.product.v1.ProductService.BatchFindById:input_type -> shopsimple.product.v1.BatchFindByIdRequest
+	9,  // 11: shopsimple.product.v1.ProductService.FindById:input_type -> shopsimple.product.v1.FindByIdRequest
+	12, // 12: shopsimple.product.v1.ProductService.CreateCategory:input_type -> shopsimple.product.v1.CreateCategoryRequest
+	10, // 13: shopsimple.product.v1.ProductService.ListCategories:input_type -> shopsimple.product.v1.ListCategoriesRequest
+	3,  // 14: shopsimple.product.v1.ProductService.List:output_type -> shopsimple.product.v1.ListResponse
+	5,  // 15: shopsimple.product.v1.ProductService.Create:output_type -> shopsimple.product.v1.CreateResponse
+	3,  // 16: shopsimple.product.v1.ProductService.Filter:output_type -> shopsimple.product.v1.ListResponse
+	3,  // 17: shopsimple.product.v1.ProductService.BatchFindById:output_type -> shopsimple.product.v1.ListResponse
+	0,  // 18: shopsimple.product.v1.ProductService.FindById:output_type -> shopsimple.product.v1.Product
+	13, // 19: shopsimple.product.v1.ProductService.CreateCategory:output_type -> shopsimple.product.v1.CreateCategoryResponse
+	11, // 20: shopsimple.product.v1.ProductService.ListCategories:output_type -> shopsimple.product.v1.ListCategoriesResponse
+	14, // [14:21] is the sub-list for method output_type
+	7,  // [7:14] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_shopsimple_product_v1_product_proto_init() }

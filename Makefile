@@ -9,7 +9,8 @@ GO_VERSION ?= 1.25
 
 .PHONY: bufpush descriptor envoy build up clean  
 
-buf:  
+# Updates buf repo, generates descriptor.pb and then restarts envoy  
+buf: descriptor envoy
 	cd $(PROTO_DIR) && buf push 
 descriptor: buf
 	cd $(PROTO_DIR) && buf build -o ../$(ENVOY_DESCRIPTOR)

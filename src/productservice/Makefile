@@ -1,6 +1,6 @@
-.PHONY: gen_proto build run view_tables_in_db apply_migrations
+.PHONY: buf build run view_tables_in_db apply_migrations
 
-gen_proto: 
+buf: 
 		buf generate buf.build/shopsimple/shopsimple
 build: 
 		docker compose build productservice 

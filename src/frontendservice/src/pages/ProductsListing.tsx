@@ -2,6 +2,21 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import FilterSection from "../components/FilterSection";
 import ProductCard from "../components/ProductCard";
+import axios, { AxiosError } from "axios";
+
+interface Price {
+    cents: string
+}
+
+interface Product {
+    id: number,
+    name: string,
+    description: string,
+    unitPrice: Price,
+    imageUrl: string,
+    stock: string,
+    createdAt: string
+}
 
 export default function ProductsListing() {
     const SAMPLE = useMemo(() => ([
@@ -11,9 +26,41 @@ export default function ProductsListing() {
         { id: '4', title: 'Running Shoes', price: '$85.00', image: 'https://htmldemo.net/venezo/venezo/assets/img/product/product4-big.jpg', category: 'Clothings', rating: 4, stock: 25 }
     ]), [])
 
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<any>(null)
+    const [data, setData] = useState<Product[]>([])
+
     const [filters, setFilters] = useState<any>(null)
 
     useEffect(() => {
+        const controller = new AbortController();
+        const fetchData = async () => {
+            setLoading(true)
+            setError(null)
+
+            try {
+                const res = await axios.get<Product[]>("http://localhost:8080/products/v1/list?page=1&page_size=10", {
+                    signal: controller.signal,
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    }
+                })
+                setData(res.data)
+            } catch (err) {
+                if (axios.isAxiosError(err)) {
+                    setError(err.message)
+                } else {
+                    setError("An unexpected error occured...")
+                }
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+
+        // Load product filters 
+
         function loadFilters() {
             try {
                 const raw = localStorage.getItem('shop_filters_v1')
@@ -57,6 +104,8 @@ export default function ProductsListing() {
         setPage(1)
     }, [filtered])
 
+    console.log(data)
+
     return (
         <div>
             <div style={{ background: 'linear-gradient(90deg,#eef2ff,#f5f7fb)', padding: '40px 0' }}>
@@ -76,7 +125,7 @@ export default function ProductsListing() {
                     <FilterSection />
                     <div className="products-listing-section mx-3">
                         <div className="products-listings">
-                            {filtered.slice((page-1)*perPage, page*perPage).map(p => (
+                            {filtered.slice((page - 1) * perPage, page * perPage).map(p => (
                                 <ProductCard key={p.id} id={p.id} title={p.title} price={p.price} image={p.image} rating={p.rating} stock={p.stock} />
                             ))}
                         </div>
@@ -84,15 +133,15 @@ export default function ProductsListing() {
                             <nav aria-label="Pagination">
                                 <ul className="pagination-custom">
                                     <li>
-                                        <button onClick={() => setPage(Math.max(1, page-1))} disabled={page===1} className="btn btn-light">Prev</button>
+                                        <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="btn btn-light">Prev</button>
                                     </li>
                                     {Array.from({ length: totalPages }).map((_, i) => (
                                         <li key={i}>
-                                            <button onClick={() => setPage(i+1)} className={i+1===page ? 'active' : ''}>{i+1}</button>
+                                            <button onClick={() => setPage(i + 1)} className={i + 1 === page ? 'active' : ''}>{i + 1}</button>
                                         </li>
                                     ))}
                                     <li>
-                                        <button onClick={() => setPage(Math.min(totalPages, page+1))} disabled={page===totalPages} className="btn btn-light">Next</button>
+                                        <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="btn btn-light">Next</button>
                                     </li>
                                 </ul>
                             </nav>

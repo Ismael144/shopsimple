@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: shopsimple/common/v1/money.proto
 
-package commonv1
+package moneyv1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -69,9 +69,11 @@ var File_shopsimple_common_v1_money_proto protoreflect.FileDescriptor
 
 const file_shopsimple_common_v1_money_proto_rawDesc = "" +
 	"\n" +
-	" shopsimple/common/v1/money.proto\"\x1d\n" +
+	" shopsimple/common/v1/money.proto\x12\bmoney.v1\"\x1d\n" +
 	"\x05Money\x12\x14\n" +
-	"\x05cents\x18\x01 \x01(\x03R\x05centsB\x18Z\x16gen/common/v1;commonv1b\x06proto3"
+	"\x05cents\x18\x01 \x01(\x03R\x05centsB\xa4\x01\n" +
+	"\fcom.money.v1B\n" +
+	"MoneyProtoP\x01ZGgithub.com/Ismael144/productservice/gen/go/shopsimple/common/v1;moneyv1\xa2\x02\x03MXX\xaa\x02\bMoney.V1\xca\x02\bMoney\\V1\xe2\x02\x14Money\\V1\\GPBMetadata\xea\x02\tMoney::V1b\x06proto3"
 
 var (
 	file_shopsimple_common_v1_money_proto_rawDescOnce sync.Once
@@ -87,7 +89,7 @@ func file_shopsimple_common_v1_money_proto_rawDescGZIP() []byte {
 
 var file_shopsimple_common_v1_money_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_shopsimple_common_v1_money_proto_goTypes = []any{
-	(*Money)(nil), // 0: Money
+	(*Money)(nil), // 0: money.v1.Money
 }
 var file_shopsimple_common_v1_money_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

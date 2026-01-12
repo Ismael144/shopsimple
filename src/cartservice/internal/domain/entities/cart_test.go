@@ -3,16 +3,15 @@ package entities
 import (
 	"testing"
 
-	"github.com"
 	"github.com/Ismael144/cartservice/internal/domain/valueobjects"
 )
 
 func InitCartWithItems() *Cart {
 	cart := NewCart(valueobjects.UserID("some-uuid"))
 
-	cartItem1 := NewCartItem("1", 4, "some item1", common.Dollars(100))
-	cartItem2 := NewCartItem("2", 4, "some item2", common.Dollars(100))
-	cartItem3 := NewCartItem("3", 4, "some item3", common.Dollars(100))
+	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.Dollars(100))
+	cartItem2 := NewCartItem("2", 4, "some item2", valueobjects.Dollars(100))
+	cartItem3 := NewCartItem("3", 4, "some item3", valueobjects.Dollars(100))
 
 	cart.AddToCart(&cartItem1)
 	cart.AddToCart(&cartItem2)
@@ -26,6 +25,32 @@ func TestAddToCart(t *testing.T) {
 
 	if len(cart.Items) != 3 {
 		t.Errorf("Expected cart length: 3 found: %d", len(cart.Items))
+	}
+}
+
+func TestGetById(t *testing.T) {
+	cart := InitCartWithItems()
+
+	cartitem := cart.GetById(valueobjects.ParseProductID("1"))
+	if cartitem == nil {
+		t.Errorf("Expected cart item")
+	}
+}
+
+// Testing cart where id of all products is the same
+func TestAddToCartWithSameIds(t *testing.T) {
+	cart := NewCart(valueobjects.UserID("some-uuid"))
+
+	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.Dollars(100))
+	cartItem2 := NewCartItem("1", 4, "some item2", valueobjects.Dollars(100))
+	cartItem3 := NewCartItem("1", 4, "some item3", valueobjects.Dollars(100))
+
+	cart.AddToCart(&cartItem1)
+	cart.AddToCart(&cartItem2)
+	cart.AddToCart(&cartItem3)
+
+	if len(cart.Items) != 1 {
+		t.Errorf("Expected cart length: 1 found: %d", len(cart.Items))
 	}
 }
 
