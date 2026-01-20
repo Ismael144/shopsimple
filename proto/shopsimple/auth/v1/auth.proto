@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package shopsimple.auth.v1;
+
+option go_package = "gen/go/shopsimple/auth/v1;authv1";
+option java_multiple_files = true; 
+option java_package = "com.shopsimple.auth.v1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "shopsimple/common/v1/pagination.proto";
+
+// User Service
+service UserService {
+  // Public
+
+  // Sign Up user
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  // Login user and will return jwt(token)
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  // Protected
+
+  // Get authenticated user
+  rpc GetMe(google.protobuf.Empty) returns (GetUserResponse);
+
+  // Create user
+  rpc CreateUser(CreateUserRequest) returns (GetUserResponse);
+  // List users with pagination
+  rpc ListUsers(GetUserRequest) returns (ListUsersResponse);
+  //Deactivate user
+  rpc DeactivateUser(DeactivateUserRequest) returns (google.protobuf.Empty);
+}
+
+// Requests and Responses
+
+// Sign Up request
+message SignUpRequest {
+  string email    = 1;
+  string password = 2;
+}
+
+message SignUpResponse {
+  User   user         = 1;
+  string access_token = 2;
+}
+
+message LoginRequest {
+  string email    = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  User   user         = 1;
+  string access_token = 2;
+}
+
+message CreateUserRequest {
+  string email    = 1;
+  string password = 2;
+  Role   role     = 3;
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message ListUserRequest {
+  uint32 page      = 1;
+  uint32 page_size = 2;
+}
+
+message ListUsersResponse {
+  repeated User        users      = 1;
+  common.v1.Pagination pagination = 2;
+}
+
+message DeactivateUserRequest {
+  string user_id = 1;
+}
+
+// Core Models models
+
+message User {
+  string                    id         = 1;
+  string                    email      = 2;
+  Role                      role       = 3;
+  bool                      is_active  = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_ADMIN       = 1;
+  ROLE_USER        = 2;
+}

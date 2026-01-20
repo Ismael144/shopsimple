@@ -8,9 +8,20 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func ToProtoMoney(money valueobjects.Money) *commonv1.Money {
+func ToProtoMoney(m valueobjects.Money) *commonv1.Money {
 	return &commonv1.Money{
-		Cents: money.Cents,
+		CurrencyCode: m.CurrencyCode,
+		Units:        m.Units,
+		Nanos:        m.Nanos,
+	}
+}
+
+// Convert proto money value type to money value domain
+func FromProtoMoney(m *commonv1.Money) valueobjects.Money {
+	return valueobjects.Money{
+		CurrencyCode: m.CurrencyCode,
+		Units:        m.Units,
+		Nanos:        m.Nanos,
 	}
 }
 
@@ -23,7 +34,7 @@ func ToProtoProduct(product *domain.Product) *productv1.Product {
 		UnitPrice:   ToProtoMoney(product.UnitPrice),
 		ImageUrl:    product.ImageUrl,
 		Stock:       uint64(product.Stock),
-		CategoryId:  product.CategoryID.String(),
+		Categories:  product.Categories,
 		CreatedAt:   timestamppb.New(product.CreatedAt),
 	}
 }
@@ -35,4 +46,13 @@ func ToProtoProducts(products []*domain.Product) []*productv1.Product {
 		grpcProducts = append(grpcProducts, ToProtoProduct(product))
 	}
 	return grpcProducts
+}
+
+// Convert pagination object into proto pagination object
+func ToProtoPagination(pagination *domain.Pagination) *commonv1.Pagination {
+	return &commonv1.Pagination{
+		CurrentPage: pagination.CurrentPage,
+		TotalItems: pagination.TotalItems,
+		TotalPages: pagination.TotalPages,
+	}
 }

@@ -8,34 +8,36 @@ import (
 	_ "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 
+	commonv1 "github.com/Ismael144/productservice/gen/go/shopsimple/common/v1"
 	productv1 "github.com/Ismael144/productservice/gen/go/shopsimple/product/v1"
 	"github.com/Ismael144/productservice/internal/application"
 	"github.com/Ismael144/productservice/internal/application/ports"
 	domain "github.com/Ismael144/productservice/internal/domain/entities"
 	"github.com/Ismael144/productservice/internal/domain/valueobjects"
 	"github.com/Ismael144/productservice/internal/transport/grpc/mapper"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type ProductHandler struct {
 	productv1.UnimplementedProductServiceServer
-	products   *application.ProductService
-	categories *application.ProductCategoryService
+	products *application.ProductService
 }
 
-func NewProductHandler(products *application.ProductService, categories *application.ProductCategoryService) *ProductHandler {
-	return &ProductHandler{products: products, categories: categories}
+// Initialize product handler
+func NewProductHandler(products *application.ProductService) *ProductHandler {
+	return &ProductHandler{products: products}
 }
 
+// List available products with pagination
 func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (*productv1.ListResponse, error) {
-	products, totalCount, err := h.products.List(ctx, req.Page, req.PageSize)
+	products, pagination, err := h.products.List(ctx, req.Page, req.PageSize)
 
 	// Check error existence
 	if err != nil {
 		return &productv1.ListResponse{
-			Products: []*productv1.Product{},
-			Total:    0,
+			Products:   []*productv1.Product{},
+			Pagination: nil,
 		}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -44,19 +46,20 @@ func (h *ProductHandler) List(ctx context.Context, req *productv1.ListRequest) (
 	fmt.Println(protoProducts)
 
 	return &productv1.ListResponse{
-		Products: protoProducts,
-		Total:    totalCount,
+		Products:   protoProducts,
+		Pagination: mapper.ToProtoPagination(pagination),
 	}, nil
 }
 
+// Create a new product
 func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateRequest) (*productv1.CreateResponse, error) {
 	newProduct := &domain.Product{
 		ID:          valueobjects.NewProductID(),
 		Name:        req.Name,
 		Description: req.Description,
-		UnitPrice:   valueobjects.MoneyFromCents(int64(req.UnitPrice)),
+		UnitPrice:   mapper.FromProtoMoney(req.UnitPrice),
 		Stock:       int64(req.Stock),
-		CategoryID:  valueobjects.CategoryID(req.CategoryId),
+		Categories:  req.Categories,
 		CreatedAt:   time.Now(),
 	}
 
@@ -67,11 +70,34 @@ func (h *ProductHandler) Create(ctx context.Context, req *productv1.CreateReques
 	return &productv1.CreateResponse{}, nil
 }
 
+// Filter products by properties
 func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterRequest) (*productv1.ListResponse, error) {
 	// Convert category ids string to CategoryID type
-	categories := make([]valueobjects.CategoryID, 0, len(req.Categories))
-	for _, categoryID := range req.Categories {
-		categories = append(categories, valueobjects.ParseCategoryID(categoryID))
+	categories := req.Categories
+
+	// We initialize price ranges
+	// This is done coz if req.PriceRanges is not provided
+	// when calling the service and you try to access req.PriceRange
+	// leading to a "invalid memory address or nil pointer dereference" error
+	var (
+		PriceRangeMin = &commonv1.Money{
+			CurrencyCode: "USD", 
+			Units: 0, 
+			Nanos: 0,
+		}
+		PriceRangeMax = &commonv1.Money{
+			CurrencyCode: "USD", 
+			Units: 0, 
+			Nanos: 0,
+		}
+	)
+
+	// We check whether req.PriceRanges is not null 
+	// to prevent null pointer dereference, if not null,
+	// we assign the min and max of price ranges
+	if req.PriceRanges != nil {
+		PriceRangeMin = req.PriceRanges.Min
+		PriceRangeMax = req.PriceRanges.Max
 	}
 
 	// Convert repo.ProductFilters to grpc.ProductFilters
@@ -80,12 +106,12 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 		PageSize:   req.PageSize,
 		Categories: categories,
 		PriceRanges: &ports.PriceRanges{
-			Min: float64(req.PriceRanges.Min),
-			Max: float64(req.PriceRanges.Max),
+			Min: mapper.FromProtoMoney(PriceRangeMin),
+			Max: mapper.FromProtoMoney(PriceRangeMax),
 		},
 	}
 
-	products, totalCount, err := h.products.Filter(ctx, &product_filters)
+	products, pagination, err := h.products.Filter(ctx, &product_filters)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -93,12 +119,13 @@ func (h *ProductHandler) Filter(ctx context.Context, req *productv1.FilterReques
 	protoProducts := mapper.ToProtoProducts(products)
 
 	return &productv1.ListResponse{
-		Products: protoProducts,
-		Total:    totalCount,
+		Products:   protoProducts,
+		Pagination: mapper.ToProtoPagination(pagination),
 	}, nil
 }
 
-func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.BatchFindByIdRequest) (*productv1.ListResponse, error) {
+// Take in a list of multiple product ids to return their details 
+func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.BatchFindByIdRequest) (*productv1.BatchFindByIdResponse, error) {
 	// Convert BatchFindByIdRequest into ProductIDs
 	product_ids := make([]*valueobjects.ProductID, 0, len(req.Ids))
 	for _, id := range req.Ids {
@@ -114,12 +141,13 @@ func (h *ProductHandler) BatchFindById(ctx context.Context, req *productv1.Batch
 	// Convert domain Products to Proto Products
 	protoProducts := mapper.ToProtoProducts(products)
 
-	return &productv1.ListResponse{
+	return &productv1.BatchFindByIdResponse{
 		Products: protoProducts,
 		Total:    totalCount,
 	}, nil
 }
 
+// Find Product details by id 
 func (h *ProductHandler) FindById(ctx context.Context, req *productv1.FindByIdRequest) (*productv1.Product, error) {
 	product, err := h.products.FindById(ctx, req.Id)
 	if err != nil {
@@ -129,38 +157,13 @@ func (h *ProductHandler) FindById(ctx context.Context, req *productv1.FindByIdRe
 	return mapper.ToProtoProduct(product), nil
 }
 
-// ================================
-// Product Categories Services
-// ================================
-
-func (c *ProductHandler) CreateCategory(ctx context.Context, req *productv1.CreateCategoryRequest) (*productv1.CreateCategoryResponse, error) {
-	categoryDomain := domain.NewProductCategory(req.Name, time.Now())
-
-	if err := c.categories.Create(ctx, &categoryDomain); err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &productv1.CreateCategoryResponse{}, nil
-}
-
-func (c *ProductHandler) ListCategories(ctx context.Context, req *productv1.ListCategoriesRequest) (*productv1.ListCategoriesResponse, error) {
-	categories, totalCount, err := c.categories.List(ctx)
+func (h *ProductHandler) ListCategories(ctx context.Context, req *emptypb.Empty) (*productv1.ListCategoriesResponse, error) {
+	categories, err := h.products.ListCategories(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	// Convert domain categories to grpc categories
-	grpcCategories := make([]*productv1.ProductCategory, 0, len(categories))
-	for _, category := range categories {
-		grpcCategories = append(grpcCategories, &productv1.ProductCategory{
-			Id:        category.ID.String(),
-			Name:      category.Name,
-			CreatedAt: timestamppb.New(category.CreatedAt),
-		})
-	}
-
 	return &productv1.ListCategoriesResponse{
-		Categories: grpcCategories,
-		Total:      totalCount,
-	}, nil
+		Categories: categories,
+	}, nil 
 }

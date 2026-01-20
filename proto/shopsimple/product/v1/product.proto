@@ -3,10 +3,14 @@ syntax = "proto3";
 package shopsimple.product.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "shopsimple/common/v1/money.proto";
+import "shopsimple/common/v1/pagination.proto";
 
 option go_package = "gen/go/shopsimple/product/v1;productv1";
+option java_multiple_files = true;
+option java_package = "com.shopsimple.product.v1";
 
 // Products service
 service ProductService {
@@ -33,7 +37,7 @@ service ProductService {
   };
 
   // Batch Find by id
-  rpc BatchFindById(BatchFindByIdRequest) returns (ListResponse) {
+  rpc BatchFindById(BatchFindByIdRequest) returns (BatchFindByIdResponse) {
     option (google.api.http) = {
       post: "/products/v1/batch-find-by-id"
       body: "*"
@@ -47,38 +51,27 @@ service ProductService {
     };
   };
 
-  // Create Product Category
-  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
+  // List available product categories 
+  rpc ListCategories(google.protobuf.Empty) returns (ListCategoriesResponse) {
     option (google.api.http) = {
-      post: "/products/v1/create_category"
-      body: "*"
-
-    };
-  };
-
-  // List Categories
-  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {
-    option (google.api.http) = {
-      get: "/products/v1/list_categories"
+      get: "/products/v1/categories"
     };
   };
 }
 
+// Represents a product
 message Product {
-  string                    id          = 1;
-  string                    name        = 2;
-  string                    description = 3;
-  money.v1.Money            unit_price  = 4;
-  string                    image_url   = 5;
-  uint64                    stock       = 6;
-  string                    category_id = 7;
-  google.protobuf.Timestamp created_at  = 8;
-}
+  string          id          = 1;
+  string          name        = 2;
+  string          description = 3;
+  common.v1.Money unit_price  = 4;
+  string          image_url   = 6;
+  uint64          stock       = 7;
+  uint32          rating      = 5;
 
-message ProductCategory {
-  string                    id         = 1;
-  string                    name       = 2;
-  google.protobuf.Timestamp created_at = 3;
+  // A list of categories that product belongs to
+  repeated string           categories = 8;
+  google.protobuf.Timestamp created_at = 9;
 }
 
 message ListRequest {
@@ -87,18 +80,18 @@ message ListRequest {
 }
 
 message ListResponse {
-  repeated Product products = 1;
-  uint32           total    = 2;
+  repeated Product     products   = 1;
+  common.v1.Pagination pagination = 2;
 }
 
 message CreateRequest {
-  string                    name        = 1;
-  string                    description = 2;
-  int64                     unit_price  = 3;
-  string                    image_url   = 4;
-  uint32                    stock       = 5;
-  string                    category_id = 6;
-  google.protobuf.Timestamp created_at  = 7;
+  string          name        = 1;
+  string          description = 2;
+  common.v1.Money unit_price  = 3;
+  string          image_url   = 4;
+  uint32          stock       = 5;
+  int32           rating      = 6;
+  repeated string categories  = 7;
 }
 
 message CreateResponse {
@@ -114,31 +107,23 @@ message FilterRequest {
 }
 
 message PriceRanges {
-  float min = 1;
-  float max = 2;
+  common.v1.Money min = 1;
+  common.v1.Money max = 2;
 }
 
 message BatchFindByIdRequest {
   repeated string ids = 1;
 }
 
+message BatchFindByIdResponse {
+  repeated Product products = 1;
+  int64            total    = 2;
+}
+
 message FindByIdRequest {
   string id = 1;
 }
 
-message ListCategoriesRequest {
-
-}
-
 message ListCategoriesResponse {
-  repeated ProductCategory categories = 1;
-  uint32                   total      = 2;
-}
-
-message CreateCategoryRequest {
-  string name = 1;
-}
-
-message CreateCategoryResponse {
-
+  repeated string categories = 1;
 }

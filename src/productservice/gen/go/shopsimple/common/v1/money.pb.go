@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: shopsimple/common/v1/money.proto
 
-package moneyv1
+package commonv1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -21,9 +21,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Represents an amount of money with its currency type.
 type Money struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Cents         int64                  `protobuf:"varint,1,opt,name=cents,proto3" json:"cents,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The 3-letter currency code defined in ISO 4217
+	CurrencyCode string `protobuf:"bytes,1,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	// The whole units of the amount
+	// For example if currencyCode is "USD", then 1 unit is one US dollar
+	Units int64 `protobuf:"varint,2,opt,name=units,proto3" json:"units,omitempty"`
+	// Number of nanos (10^-9) units of the amount
+	// The value must be between -999,999,999 and +999,999,999 inclusive
+	// If `units` is positive, `nanos` must be positive or zero
+	// If `units` is negative, `nanos` must be negative or zero
+	// For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000
+	Nanos         int32 `protobuf:"varint,3,opt,name=nanos,proto3" json:"nanos,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,9 +69,23 @@ func (*Money) Descriptor() ([]byte, []int) {
 	return file_shopsimple_common_v1_money_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Money) GetCents() int64 {
+func (x *Money) GetCurrencyCode() string {
 	if x != nil {
-		return x.Cents
+		return x.CurrencyCode
+	}
+	return ""
+}
+
+func (x *Money) GetUnits() int64 {
+	if x != nil {
+		return x.Units
+	}
+	return 0
+}
+
+func (x *Money) GetNanos() int32 {
+	if x != nil {
+		return x.Nanos
 	}
 	return 0
 }
@@ -69,11 +94,14 @@ var File_shopsimple_common_v1_money_proto protoreflect.FileDescriptor
 
 const file_shopsimple_common_v1_money_proto_rawDesc = "" +
 	"\n" +
-	" shopsimple/common/v1/money.proto\x12\bmoney.v1\"\x1d\n" +
-	"\x05Money\x12\x14\n" +
-	"\x05cents\x18\x01 \x01(\x03R\x05centsB\xa4\x01\n" +
-	"\fcom.money.v1B\n" +
-	"MoneyProtoP\x01ZGgithub.com/Ismael144/productservice/gen/go/shopsimple/common/v1;moneyv1\xa2\x02\x03MXX\xaa\x02\bMoney.V1\xca\x02\bMoney\\V1\xe2\x02\x14Money\\V1\\GPBMetadata\xea\x02\tMoney::V1b\x06proto3"
+	" shopsimple/common/v1/money.proto\x12\tcommon.v1\"X\n" +
+	"\x05Money\x12#\n" +
+	"\rcurrency_code\x18\x01 \x01(\tR\fcurrencyCode\x12\x14\n" +
+	"\x05units\x18\x02 \x01(\x03R\x05units\x12\x14\n" +
+	"\x05nanos\x18\x03 \x01(\x05R\x05nanosB\xaa\x01\n" +
+	"\rcom.common.v1B\n" +
+	"MoneyProtoP\x01ZHgithub.com/Ismael144/productservice/gen/go/shopsimple/common/v1;commonv1\xa2\x02\x03CXX\xaa\x02\tCommon.V1\xca\x02\tCommon\\V1\xe2\x02\x15Common\\V1\\GPBMetadata\xea\x02\n" +
+	"Common::V1b\x06proto3"
 
 var (
 	file_shopsimple_common_v1_money_proto_rawDescOnce sync.Once
@@ -89,7 +117,7 @@ func file_shopsimple_common_v1_money_proto_rawDescGZIP() []byte {
 
 var file_shopsimple_common_v1_money_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_shopsimple_common_v1_money_proto_goTypes = []any{
-	(*Money)(nil), // 0: money.v1.Money
+	(*Money)(nil), // 0: common.v1.Money
 }
 var file_shopsimple_common_v1_money_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

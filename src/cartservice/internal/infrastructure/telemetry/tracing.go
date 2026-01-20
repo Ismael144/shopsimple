@@ -10,6 +10,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 )
 
+// Initialize jaeger tracing
 func InitTracer(serviceName, jaeger_url string) (func(context.Context) error, error) {
 	exp, err := jaeger.New(
 		jaeger.WithCollectorEndpoint(

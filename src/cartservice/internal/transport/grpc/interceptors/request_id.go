@@ -24,16 +24,20 @@ func RequestIDInterceptor() grpc.UnaryServerInterceptor {
 	) (any, error) {
 		var reqID string
 
+		// Get for 'x-request-id' header from metadata
 		if md, ok := metadata.FromIncomingContext(ctx); ok {
 			if vals := md.Get("x-request-id"); len(vals) > 0 {
 				reqID = vals[0]
 			}
 		}
 
+		// If request id wasn't found in headers
+		// then generate a new one
 		if reqID == "" {
 			reqID = uuid.NewString()
 		}
 
+		// Store request id in context 
 		ctx = requestid.With(ctx, reqID)
 
 		// Attach to active span

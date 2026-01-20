@@ -23,7 +23,7 @@ body{background:var(--bg);font-family:Inter,system-ui,-apple-system,'Segoe UI',R
 .card .card-body{padding:14px}
 .btn{border-radius:8px}
 .products-listing-grid{display:grid;grid-template-columns:280px 1fr;gap:28px}
-.products-listings{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.products-listings{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:stretch}@media(max-width:768px){.products-listings{grid-template-columns:1fr}}
 .product-body{background:var(--card);padding:20px;border-radius:10px}
 /* Pagination */
 .pagination-custom{display:flex;gap:6px;list-style:none;padding:0;margin:18px 0}

@@ -11,16 +11,22 @@ import (
 
 func ToProtoMoney(m valueobjects.Money) *commonv1.Money {
 	return &commonv1.Money{
-		Cents: m.Cents,
+		CurrencyCode: m.CurrencyCode,
+		Units:        m.Units,
+		Nanos:        m.Nanos,
 	}
 }
 
+// Convert proto money value type to money value domain
 func FromProtoMoney(m *commonv1.Money) valueobjects.Money {
 	return valueobjects.Money{
-		Cents: m.Cents,
+		CurrencyCode: m.CurrencyCode,
+		Units:        m.Units,
+		Nanos:        m.Nanos,
 	}
 }
 
+// Convert cart item domain to cart item proto type
 func ToProtoCartItem(cartItemDomain *entities.CartItem) cartv1.CartItem {
 	return cartv1.CartItem{
 		ProductId:   cartItemDomain.ProductID.String(),
@@ -30,6 +36,7 @@ func ToProtoCartItem(cartItemDomain *entities.CartItem) cartv1.CartItem {
 	}
 }
 
+// Convert cart domain type to cart proto type
 func ToProtoCart(cartDomain *entities.Cart) *cartv1.Cart {
 	fmt.Println(cartDomain)
 	cartItems := make([]*cartv1.CartItem, 0, len(cartDomain.Items))

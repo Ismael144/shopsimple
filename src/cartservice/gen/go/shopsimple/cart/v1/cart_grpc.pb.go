@@ -19,12 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CartService_AddItem_FullMethodName          = "/cart.v1.CartService/AddItem"
-	CartService_DeductFromCart_FullMethodName   = "/cart.v1.CartService/DeductFromCart"
-	CartService_RemoveFromCart_FullMethodName   = "/cart.v1.CartService/RemoveFromCart"
-	CartService_GetCart_FullMethodName          = "/cart.v1.CartService/GetCart"
-	CartService_Clear_FullMethodName            = "/cart.v1.CartService/Clear"
-	CartService_AssignToAuthUser_FullMethodName = "/cart.v1.CartService/AssignToAuthUser"
+	CartService_AddItem_FullMethodName           = "/shopsimple.cart.v1.CartService/AddItem"
+	CartService_DeductFromCart_FullMethodName    = "/shopsimple.cart.v1.CartService/DeductFromCart"
+	CartService_RemoveFromCart_FullMethodName    = "/shopsimple.cart.v1.CartService/RemoveFromCart"
+	CartService_GetCart_FullMethodName           = "/shopsimple.cart.v1.CartService/GetCart"
+	CartService_Clear_FullMethodName             = "/shopsimple.cart.v1.CartService/Clear"
+	CartService_AssignToAuthUser_FullMethodName  = "/shopsimple.cart.v1.CartService/AssignToAuthUser"
+	CartService_ConvertToCurrency_FullMethodName = "/shopsimple.cart.v1.CartService/ConvertToCurrency"
 )
 
 // CartServiceClient is the client API for CartService service.
@@ -45,6 +46,11 @@ type CartServiceClient interface {
 	Clear(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*ModifyCartResponse, error)
 	// Swaps cart from guest user id to authenticated user id
 	AssignToAuthUser(ctx context.Context, in *AssignToAuthUserRequest, opts ...grpc.CallOption) (*AssignToAuthUserResponse, error)
+	// Converts cart items currency to specified currency
+	// For example if a user chooses their desired currency
+	// This function will perform calculations to convert the
+	// currency into their desired currency
+	ConvertToCurrency(ctx context.Context, in *ConvertToCurrencyRequest, opts ...grpc.CallOption) (*ModifyCartResponse, error)
 }
 
 type cartServiceClient struct {
@@ -115,6 +121,16 @@ func (c *cartServiceClient) AssignToAuthUser(ctx context.Context, in *AssignToAu
 	return out, nil
 }
 
+func (c *cartServiceClient) ConvertToCurrency(ctx context.Context, in *ConvertToCurrencyRequest, opts ...grpc.CallOption) (*ModifyCartResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ModifyCartResponse)
+	err := c.cc.Invoke(ctx, CartService_ConvertToCurrency_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CartServiceServer is the server API for CartService service.
 // All implementations must embed UnimplementedCartServiceServer
 // for forward compatibility.
@@ -133,6 +149,11 @@ type CartServiceServer interface {
 	Clear(context.Context, *GetCartRequest) (*ModifyCartResponse, error)
 	// Swaps cart from guest user id to authenticated user id
 	AssignToAuthUser(context.Context, *AssignToAuthUserRequest) (*AssignToAuthUserResponse, error)
+	// Converts cart items currency to specified currency
+	// For example if a user chooses their desired currency
+	// This function will perform calculations to convert the
+	// currency into their desired currency
+	ConvertToCurrency(context.Context, *ConvertToCurrencyRequest) (*ModifyCartResponse, error)
 	mustEmbedUnimplementedCartServiceServer()
 }
 
@@ -160,6 +181,9 @@ func (UnimplementedCartServiceServer) Clear(context.Context, *GetCartRequest) (*
 }
 func (UnimplementedCartServiceServer) AssignToAuthUser(context.Context, *AssignToAuthUserRequest) (*AssignToAuthUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AssignToAuthUser not implemented")
+}
+func (UnimplementedCartServiceServer) ConvertToCurrency(context.Context, *ConvertToCurrencyRequest) (*ModifyCartResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ConvertToCurrency not implemented")
 }
 func (UnimplementedCartServiceServer) mustEmbedUnimplementedCartServiceServer() {}
 func (UnimplementedCartServiceServer) testEmbeddedByValue()                     {}
@@ -290,11 +314,29 @@ func _CartService_AssignToAuthUser_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CartService_ConvertToCurrency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConvertToCurrencyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CartServiceServer).ConvertToCurrency(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CartService_ConvertToCurrency_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CartServiceServer).ConvertToCurrency(ctx, req.(*ConvertToCurrencyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CartService_ServiceDesc is the grpc.ServiceDesc for CartService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CartService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "cart.v1.CartService",
+	ServiceName: "shopsimple.cart.v1.CartService",
 	HandlerType: (*CartServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -320,6 +362,10 @@ var CartService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssignToAuthUser",
 			Handler:    _CartService_AssignToAuthUser_Handler,
+		},
+		{
+			MethodName: "ConvertToCurrency",
+			Handler:    _CartService_ConvertToCurrency_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

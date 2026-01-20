@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Init redis client
 func NewRedis(addr string) *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     addr,

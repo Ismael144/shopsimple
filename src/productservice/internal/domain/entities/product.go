@@ -13,19 +13,23 @@ type Product struct {
 	UnitPrice   valueobjects.Money
 	ImageUrl    string
 	Stock       int64
-	CategoryID  valueobjects.CategoryID
-	CreatedAt   time.Time
+	Rating      uint32
+	// A list of categories
+	Categories []string
+	CreatedAt  time.Time
 }
 
-func NewProduct(name, description string, unit_price float64, image_url string, stock int64, category_id string, now time.Time) Product {
+// Initialize new product, takes in money from database
+func NewProduct(name, description string, unit_price valueobjects.Money, image_url string, stock int64, categories []string, rating uint32, now time.Time) Product {
 	return Product{
 		ID:          valueobjects.NewProductID(),
 		Name:        name,
 		Description: description,
-		UnitPrice:   valueobjects.MoneyFromCents(int64(unit_price)),
+		UnitPrice:   unit_price,
 		ImageUrl:    image_url,
 		Stock:       stock,
-		CategoryID:  valueobjects.ParseCategoryID(category_id),
+		Rating:      rating,
+		Categories:  categories,
 		CreatedAt:   now,
 	}
 }

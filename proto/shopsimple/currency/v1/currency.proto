@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package shopsimple.currency.v1;
+
+option go_package = "gen/go/shopsimple/currency/v1;currencyv1";
+option java_multiple_files = true;
+option java_package = "com.shopsimple.currency.v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "shopsimple/common/v1/money.proto";
+
+// Contains currency service rpc methods
+service CurrencyService {
+  // Get currently supported currencies
+  rpc GetSupportedCurrencies(google.protobuf.Empty) returns (SupportedCurrenciesResponse) {
+    option (google.api.http) = {
+      get: "/v1/"
+    };
+  };
+
+  // Convert one currency to another (USD -> EUR)
+  rpc Convert(CurrencyConversionRequest) returns (common.v1.Money);
+
+  // Do multiple currency conversions
+  // The order of the responses/currency conversions
+  // has to match the order of the currency conversion request
+  rpc BatchConvert(BatchCurrencyConversionRequest) returns (BatchCurrencyConversionResponse);
+}
+
+// Represents a list of currencies in defined ISO-4217
+message SupportedCurrenciesResponse {
+  // 3-letter currency code e.g. (USD, EUR, UGX)
+  repeated string currencies = 1;
+}
+
+message BatchCurrencyConversionRequest {
+  repeated common.v1.Money from_money = 1;
+
+  // The 3-letter currency code defined in ISO-4217
+  string to_code = 2;
+}
+
+// The order of the response from conversions should be strictly ordered
+message BatchCurrencyConversionResponse {
+  repeated common.v1.Money results = 1;
+}
+
+message CurrencyConversionRequest {
+  common.v1.Money from_money = 1;
+
+  // The 3-letter currency code defined in ISO 4217
+  string to_code = 2;
+}

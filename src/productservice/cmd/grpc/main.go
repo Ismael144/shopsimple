@@ -13,11 +13,10 @@ import (
 	"github.com/Ismael144/productservice/internal/infrastructure/db"
 	"github.com/Ismael144/productservice/internal/infrastructure/logging"
 	"github.com/Ismael144/productservice/internal/infrastructure/repository"
-	"github.com/Ismael144/productservice/internal/infrastructure/repository/product"
-	"github.com/Ismael144/productservice/internal/infrastructure/repository/product_category"
 	"github.com/Ismael144/productservice/internal/infrastructure/telemetry"
 	grpcTransport "github.com/Ismael144/productservice/internal/transport/grpc"
 	"github.com/Ismael144/productservice/internal/transport/grpc/interceptors"
+	"github.com/Ismael144/productservice/migrations"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
@@ -33,17 +32,27 @@ func main() {
 	cfg := config.LoadConfig()
 
 	// Database
-	gormDB, err := db.NewPostgres(cfg.DatabaseURL)
+	client, err := db.NewMongoClient(ctx, cfg.DatabaseURL)
 	if err != nil {
-		log.Fatalf("failed to connect to postgres: %v", err)
+		log.Fatalf("Failed to initialize database: %+v", err)
 	}
 
+	defer func() {
+		_ = client.Disconnect(ctx)
+	}()
+
+	// Mongo Db
+	db := db.NewMongoDatabase(client, os.Getenv("MONGO_DB"))
+
 	// Auto Migrate Models
-	gormDB.AutoMigrate(&product.ProductModel{}, &product_category.ProductCategoryModel{})
+	if cfg.RunMigrations == "true" {
+		if err := migrations.EnsureProductIndexes(ctx, db); err != nil {
+			log.Fatalf("Failed to run migrations: %+v", err)
+		}
+	}
 
 	// Infrastructure
-	productsRepo := repository.NewProductsRepository(gormDB)
-	categoriesRepo := repository.NewProductCategoryRepository(gormDB)
+	productsRepo := repository.NewMongoProductRepository(db)
 	logger, _ := logging.New()
 	defer logger.Sync()
 
@@ -54,19 +63,14 @@ func main() {
 	defer shutdown(ctx)
 
 	// Application
-	productservice := application.NewProductservice(
+	productservice := application.NewProductService(
 		productsRepo,
-	)
-
-	categoryservice := application.NewProductCategoryService(
-		categoriesRepo,
 	)
 
 	// Initialize server
 	server, err := grpcTransport.NewServer(
 		cfg.GRPCAddr,
 		productservice,
-		categoryservice,
 		interceptors.RequestIDInterceptor(),
 		interceptors.LoggingInterceptor(logger),
 	)

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cart.v1;
+package shopsimple.cart.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
@@ -13,7 +13,7 @@ service CartService {
   // Add product to cart
   rpc AddItem(ModifyCartRequest) returns (ModifyCartResponse) {
     option (google.api.http) = {
-      post: "cart/v1/add"
+      post: "/cart/v1/add"
       body: "*"
     };
   };
@@ -21,7 +21,7 @@ service CartService {
   // Deduct quantity from cart
   rpc DeductFromCart(ModifyCartRequest) returns (ModifyCartResponse) {
     option (google.api.http) = {
-      post: "cart/v1/deduct"
+      post: "/cart/v1/deduct"
       body: "*"
     };
   };
@@ -29,7 +29,7 @@ service CartService {
   // Remove item from cart
   rpc RemoveFromCart(RemoveFromCartRequest) returns (ModifyCartResponse) {
     option (google.api.http) = {
-      post: "cart/v1/deduct"
+      post: "/cart/v1/remove"
       body: "*"
     };
   };
@@ -37,14 +37,14 @@ service CartService {
   // Get items in cart
   rpc GetCart(GetCartRequest) returns (GetCartResponse) {
     option (google.api.http) = {
-      get: "cart/v1"
+      get: "/cart/v1"
     };
   };
 
   // Clear items in the cart
   rpc Clear(GetCartRequest) returns (ModifyCartResponse) {
     option (google.api.http) = {
-      post: "cart/v1/clear"
+      post: "/cart/v1/clear"
       body: "*"
     };
   }
@@ -52,7 +52,18 @@ service CartService {
   // Swaps cart from guest user id to authenticated user id
   rpc AssignToAuthUser(AssignToAuthUserRequest) returns (AssignToAuthUserResponse) {
     option (google.api.http) = {
-      post: "cart/v1/swap"
+      post: "/cart/v1/swap"
+      body: "*"
+    };
+  };
+
+  // Converts cart items currency to specified currency
+  // For example if a user chooses their desired currency
+  // This function will perform calculations to convert the
+  // currency into their desired currency
+  rpc ConvertToCurrency(ConvertToCurrencyRequest) returns (ModifyCartResponse) {
+    option (google.api.http) = {
+      post: "/cart/v1/convert-currency"
       body: "*"
     };
   };
@@ -61,14 +72,15 @@ service CartService {
 message Cart {
   string            user_id          = 1;
   repeated CartItem cart_items       = 2;
-  money.v1.Money    cart_price_total = 3;
+  common.v1.Money   cart_price_total = 3;
+  string            currency         = 4;
 }
 
 message CartItem {
-  string         product_id   = 2;
-  uint32         quantity     = 3;
-  string         product_name = 4;
-  money.v1.Money unit_price   = 5;
+  string          product_id   = 1;
+  uint32          quantity     = 2;
+  string          product_name = 3;
+  common.v1.Money unit_price   = 4;
 }
 
 message ModifyCartRequest {
@@ -78,7 +90,13 @@ message ModifyCartRequest {
 }
 
 message ModifyCartResponse {
-  string product_id = 1;
+  // Returns the current state of the cart
+  // Every time the cart is modified,
+  // Its done like this so that GetCart is
+  // not called everytime the cart is modified.
+  // The returned state of cart could be saved or cached
+  // somewhere to saving us from making GetCart grpc call
+  Cart cart = 1;
 }
 
 message RemoveFromCartRequest {
@@ -101,4 +119,13 @@ message AssignToAuthUserRequest {
 
 message AssignToAuthUserResponse {
   string auth_user_id = 1;
+}
+
+// Will be used to convert a user's cart items
+// into currency selected by user
+message ConvertToCurrencyRequest {
+  string user_id = 1;
+
+  // Currency code: in ISO-4217 format
+  string currency = 2;
 }

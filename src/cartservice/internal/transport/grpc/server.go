@@ -17,37 +17,42 @@ import (
 )
 
 type Server struct {
-	grpc *grpc.Server 
-	lis net.Listener
+	grpc *grpc.Server
+	lis  net.Listener
 }
 
 func NewServer(
-	addr string, 
-	cart_service *application.CartService, 
-	product_client *clients.ProductClient, 
+	addr string,
+	cart_service *application.CartService,
+	product_client *clients.ProductServiceClient,
+	currency_client *clients.CurrencyServiceClient,
 	unaryInterceptors ...grpc.UnaryServerInterceptor,
 ) (*Server, error) {
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		return nil, err 
+		return nil, err
 	}
 
-	// Adding interceptors 
+	// Adding interceptors
 	server := grpc.NewServer(
-		grpc.StatsHandler(otelgrpc.NewServerHandler()), 
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			unaryInterceptors...,
-		), 
+		),
 		grpc.ConnectionTimeout(5*time.Second),
 	)
 
-	// Cart service 
+	// Cart service
 	cartv1.RegisterCartServiceServer(
 		server,
-		handlers.NewCartHandler(cart_service, product_client),
+		handlers.NewCartHandler(
+			cart_service, 
+			product_client,
+			currency_client,
+		),
 	)
 
-	// Health service 
+	// Health service
 	healthServer := health.NewServer()
 	healthServer.SetServingStatus(
 		"",
@@ -55,14 +60,14 @@ func NewServer(
 	)
 	healthpb.RegisterHealthServer(server, healthServer)
 
-	// Reflection 
+	// Reflection
 	reflection.Register(server)
 
 	// Serve GRPC Server
 	return &Server{
-		grpc: server, 
-		lis: lis,
-	}, nil 
+		grpc: server,
+		lis:  lis,
+	}, nil
 }
 
 func (s *Server) Start() error {

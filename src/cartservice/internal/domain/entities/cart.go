@@ -19,7 +19,9 @@ func NewCart(UserID valueobjects.UserID) *Cart {
 	return &Cart{
 		UserID:     UserID,
 		Items:      []*CartItem{},
-		PriceTotal: valueobjects.MoneyFromCents(0),
+		// Currency code will be determined by first item
+		// added to cart
+		PriceTotal: valueobjects.NewMoney("", 0, 0),
 	}
 }
 
@@ -32,23 +34,27 @@ func (cart *Cart) GetById(productId valueobjects.ProductID) *CartItem {
 	return nil
 }
 
-func (cart *Cart) AddToCart(item *CartItem) error {
+func (cart *Cart) AddToCart(item *CartItem, productStock uint32) (*Cart, error) {
 	// Some qty validation, its uint32, meaning this validation check is completely useless
 	// I'ma jus leave it there :)
-	if item.Quantity <= 0 {
-		return domain.ErrInvalidQuantity
+	if item.Quantity == 0 {
+		return nil, domain.ErrInvalidQuantity
 	}
 	cartItem := cart.GetById(item.ProductID)
+	// Stock validation
+	if item.Quantity > productStock {
+		return nil, domain.ErrStockLimitReached
+	}
 	if cartItem != nil {
 		cartItem.Quantity += item.Quantity
 	} else {
 		cart.Items = append(cart.Items, item)
 	}
 
-	return nil
+	return cart.GetCart(), nil
 }
 
-func (cart *Cart) DeductFromCart(productID valueobjects.ProductID, Quantity uint32) {
+func (cart *Cart) DeductFromCart(productID valueobjects.ProductID, Quantity uint32) *Cart {
 	for i, existing := range cart.Items {
 		if existing.ProductID == productID {
 			if existing.Quantity <= Quantity {
@@ -56,16 +62,24 @@ func (cart *Cart) DeductFromCart(productID valueobjects.ProductID, Quantity uint
 			} else {
 				cart.Items[i].Quantity -= Quantity
 			}
-			return
+			break
 		}
 	}
+	return cart.GetCart()
 }
 
 // Compute cart price total
 func (cart *Cart) Total() valueobjects.Money {
-	total := valueobjects.Money{Cents: 0}
+	total := valueobjects.NewMoney("", 0, 0)
 	for _, item := range cart.Items {
-		total = total.Add(item.UnitPrice.Mul(int64(item.Quantity)))
+		// We set currency code of total variable basing 
+		// on currency of first item in cart
+		total.CurrencyCode = item.UnitPrice.GetCurrencyCode()
+		total = valueobjects.Must(
+			valueobjects.Sum(
+				total, valueobjects.Multiply(item.UnitPrice, item.Quantity),
+			),
+		)
 	}
 	cart.PriceTotal = total
 
@@ -73,18 +87,20 @@ func (cart *Cart) Total() valueobjects.Money {
 }
 
 // Remove item by id from cart
-func (cart *Cart) RemoveItem(productID valueobjects.ProductID) {
+func (cart *Cart) RemoveItem(productID valueobjects.ProductID) *Cart {
 	for i, item := range cart.Items {
 		if item.ProductID == productID {
 			cart.Items = slices.Delete(cart.Items, i, i+1)
-			return
+			break
 		}
 	}
+	return cart.GetCart()
 }
 
 // Clear cart
-func (cart *Cart) Clear() {
+func (cart *Cart) Empty() *Cart {
 	cart.Items = []*CartItem{}
+	return cart.GetCart()
 }
 
 // Computes total and saves the total in Total field in cart

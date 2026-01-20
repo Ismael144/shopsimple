@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,7 +25,6 @@ const (
 	ProductService_Filter_FullMethodName         = "/shopsimple.product.v1.ProductService/Filter"
 	ProductService_BatchFindById_FullMethodName  = "/shopsimple.product.v1.ProductService/BatchFindById"
 	ProductService_FindById_FullMethodName       = "/shopsimple.product.v1.ProductService/FindById"
-	ProductService_CreateCategory_FullMethodName = "/shopsimple.product.v1.ProductService/CreateCategory"
 	ProductService_ListCategories_FullMethodName = "/shopsimple.product.v1.ProductService/ListCategories"
 )
 
@@ -41,13 +41,11 @@ type ProductServiceClient interface {
 	// Filter by properties
 	Filter(ctx context.Context, in *FilterRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	// Batch Find by id
-	BatchFindById(ctx context.Context, in *BatchFindByIdRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	BatchFindById(ctx context.Context, in *BatchFindByIdRequest, opts ...grpc.CallOption) (*BatchFindByIdResponse, error)
 	// Batch Find by id
 	FindById(ctx context.Context, in *FindByIdRequest, opts ...grpc.CallOption) (*Product, error)
-	// Create Product Category
-	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
-	// List Categories
-	ListCategories(ctx context.Context, in *ListCategoriesRequest, opts ...grpc.CallOption) (*ListCategoriesResponse, error)
+	// List available product categories
+	ListCategories(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCategoriesResponse, error)
 }
 
 type productServiceClient struct {
@@ -88,9 +86,9 @@ func (c *productServiceClient) Filter(ctx context.Context, in *FilterRequest, op
 	return out, nil
 }
 
-func (c *productServiceClient) BatchFindById(ctx context.Context, in *BatchFindByIdRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+func (c *productServiceClient) BatchFindById(ctx context.Context, in *BatchFindByIdRequest, opts ...grpc.CallOption) (*BatchFindByIdResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListResponse)
+	out := new(BatchFindByIdResponse)
 	err := c.cc.Invoke(ctx, ProductService_BatchFindById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -108,17 +106,7 @@ func (c *productServiceClient) FindById(ctx context.Context, in *FindByIdRequest
 	return out, nil
 }
 
-func (c *productServiceClient) CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateCategoryResponse)
-	err := c.cc.Invoke(ctx, ProductService_CreateCategory_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *productServiceClient) ListCategories(ctx context.Context, in *ListCategoriesRequest, opts ...grpc.CallOption) (*ListCategoriesResponse, error) {
+func (c *productServiceClient) ListCategories(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCategoriesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListCategoriesResponse)
 	err := c.cc.Invoke(ctx, ProductService_ListCategories_FullMethodName, in, out, cOpts...)
@@ -141,13 +129,11 @@ type ProductServiceServer interface {
 	// Filter by properties
 	Filter(context.Context, *FilterRequest) (*ListResponse, error)
 	// Batch Find by id
-	BatchFindById(context.Context, *BatchFindByIdRequest) (*ListResponse, error)
+	BatchFindById(context.Context, *BatchFindByIdRequest) (*BatchFindByIdResponse, error)
 	// Batch Find by id
 	FindById(context.Context, *FindByIdRequest) (*Product, error)
-	// Create Product Category
-	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
-	// List Categories
-	ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error)
+	// List available product categories
+	ListCategories(context.Context, *emptypb.Empty) (*ListCategoriesResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -167,16 +153,13 @@ func (UnimplementedProductServiceServer) Create(context.Context, *CreateRequest)
 func (UnimplementedProductServiceServer) Filter(context.Context, *FilterRequest) (*ListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Filter not implemented")
 }
-func (UnimplementedProductServiceServer) BatchFindById(context.Context, *BatchFindByIdRequest) (*ListResponse, error) {
+func (UnimplementedProductServiceServer) BatchFindById(context.Context, *BatchFindByIdRequest) (*BatchFindByIdResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method BatchFindById not implemented")
 }
 func (UnimplementedProductServiceServer) FindById(context.Context, *FindByIdRequest) (*Product, error) {
 	return nil, status.Error(codes.Unimplemented, "method FindById not implemented")
 }
-func (UnimplementedProductServiceServer) CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateCategory not implemented")
-}
-func (UnimplementedProductServiceServer) ListCategories(context.Context, *ListCategoriesRequest) (*ListCategoriesResponse, error) {
+func (UnimplementedProductServiceServer) ListCategories(context.Context, *emptypb.Empty) (*ListCategoriesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListCategories not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
@@ -290,26 +273,8 @@ func _ProductService_FindById_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductService_CreateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateCategoryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProductServiceServer).CreateCategory(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ProductService_CreateCategory_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).CreateCategory(ctx, req.(*CreateCategoryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ProductService_ListCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListCategoriesRequest)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -321,7 +286,7 @@ func _ProductService_ListCategories_Handler(srv interface{}, ctx context.Context
 		FullMethod: ProductService_ListCategories_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).ListCategories(ctx, req.(*ListCategoriesRequest))
+		return srv.(ProductServiceServer).ListCategories(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -352,10 +317,6 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindById",
 			Handler:    _ProductService_FindById_Handler,
-		},
-		{
-			MethodName: "CreateCategory",
-			Handler:    _ProductService_CreateCategory_Handler,
 		},
 		{
 			MethodName: "ListCategories",

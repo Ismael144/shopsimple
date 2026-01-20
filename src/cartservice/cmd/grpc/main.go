@@ -46,10 +46,11 @@ func main() {
 	defer shutdown(ctx)
 
 	// Application
-	productClient, err := clients.NewProductClient(cfg.ProductServerAddr)
+	productClient, err := clients.NewProductServiceServerClient(cfg.ProductServerAddr)
 	if err != nil {
 		log.Fatalf("Failed to initialize products service client")
 	}
+	currencyClient, err := clients.NewCurrencyServiceServerClient(cfg.CurrencyServerAddr)
 
 	cartservice := application.NewCartService(
 		cartRepo,
@@ -59,6 +60,7 @@ func main() {
 		cfg.GRPCAddr,
 		cartservice,
 		productClient,
+		currencyClient,
 		interceptors.RequestIDInterceptor(),
 		interceptors.LoggingInterceptor(logger),
 	)

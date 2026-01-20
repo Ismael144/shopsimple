@@ -21,7 +21,7 @@ func InitMetrics() (*sdkmetric.MeterProvider, http.Handler, error) {
 
 	otel.SetMeterProvider(provider)
 
-	// exporter expose an HTTP handler via promhttp internally 
+	// exporter exposes an HTTP handler via promhttp internally 
 	handler := promhttp.Handler()
 
 	return provider, handler, nil 

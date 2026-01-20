@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 
+interface Price {
+  currencyCode: string;
+  units: string;
+  nanos: number;
+}
+
 type Props = {
   id?: string | number;
   title: string;
-  price: string;
+  price: Price | string;
   image?: string;
   rating?: number;
   stock?: number;
+  categories?: string[];
 };
 
-export default function ProductCard({ id, title, price, image, rating = 4, stock = 0 }: Props) {
+export default function ProductCard({ id, title, price, image, rating = 4, stock = 0, categories = [] }: Props) {
+  const [imageLoaded, setImageLoaded] = useState(false)
   const { addItem, items } = useCart()
   const { addToast } = useToast()
 
-  function parsePrice(p: string) {
-    const n = Number(String(p).replace(/[^0-9.-]+/g, ''))
-    return Number.isFinite(n) ? n : 0
+  function parsePrice(p: Price | string): number {
+    if (typeof p === 'string') {
+      const n = Number(String(p).replace(/[^0-9.-]+/g, ''))
+      return Number.isFinite(n) ? n : 0
+    }
+    const units = Number(p.units) || 0;
+    const nanos = p.nanos || 0;
+    return units + (nanos / 1_000_000_000);
+  }
+
+  function formatPrice(p: Price | string): string {
+    const amount = parsePrice(p);
+    const currency = typeof p === 'object' ? p.currencyCode : 'USD';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
   }
 
   const cartItem = items.find(item => String(item.id) === String(id || title))
@@ -29,9 +53,19 @@ export default function ProductCard({ id, title, price, image, rating = 4, stock
 
   return (
     <Link to={`/${id}/details`} className="product-card" style={{ textDecoration: "none" }}>
-      <div className="card" style={{ position: 'relative' }}>
-        <div className="card-image" style={{ position: 'relative' }}>
-          <img src={image || "https://htmldemo.net/venezo/venezo/assets/img/product/product1-big.jpg"} alt={title} />
+      <div className="card" style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="card-image" style={{ position: 'relative', backgroundColor: '#f3f4f6', height: '250px' }}>
+          <img 
+            src={image || "https://htmldemo.net/venezo/venezo/assets/img/product/product1-big.jpg"} 
+            alt={title}
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease-in' }}
+          />
+          {!imageLoaded && (
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', color: '#9ca3af', fontSize: '12px' }}>Loading image...</div>
+          )}
           {cartQuantity > 0 && (
             <div style={{
               position: 'absolute',
@@ -53,10 +87,12 @@ export default function ProductCard({ id, title, price, image, rating = 4, stock
             </div>
           )}
         </div>
-        <div className="card-body">
+        <div className="card-body" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           <div className="title">{title}</div>
-          <div className="muted">Simple short description</div>
-          <div className="price mt-2">{price}</div>
+          <div className="muted" style={{ fontSize: '12px', marginBottom: '8px' }}>
+            {categories.length > 0 ? categories.join(', ') : 'Uncategorized'}
+          </div>
+          <div className="price mt-2">{formatPrice(price)}</div>
           <div className="mt-2" style={{ display: "flex", gap: 6, alignItems: "center" }}>
             {Array.from({ length: Math.max(0, Math.min(5, Math.round(rating))) }).map((_, i) => (
               <FontAwesomeIcon key={i} icon={faStar} style={{ color: "#f59e0b" }} />
@@ -84,7 +120,7 @@ export default function ProductCard({ id, title, price, image, rating = 4, stock
               ✓ {cartQuantity} in cart
             </div>
           )}
-          <div className="mt-2">
+          <div className="mt-2" style={{ marginTop: 'auto' }}>
             <button 
               className="btn btn-success" 
               onClick={(e) => { 

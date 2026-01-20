@@ -6,18 +6,20 @@ import (
 )
 
 type Config struct {
-	GRPCAddr          string
-	RedisAddr         string
-	JaegarURL         string
-	ProductServerAddr string
+	GRPCAddr           string
+	RedisAddr          string
+	JaegarURL          string
+	ProductServerAddr  string
+	CurrencyServerAddr string
 }
 
 func LoadConfig() Config {
 	return Config{
-		GRPCAddr:          getEnv("GRPC_ADDR", ":50052"),
-		RedisAddr:         mustEnv("REDIS_ADDR"),
-		JaegarURL:         mustEnv("JAEGER_URL"),
-		ProductServerAddr: mustEnv("PRODUCTSERVICE_ADDR"),
+		GRPCAddr:           getEnv("GRPC_ADDR", ":50052"),
+		RedisAddr:          mustEnv("REDIS_ADDR"),
+		JaegarURL:          mustEnv("JAEGER_URL"),
+		ProductServerAddr:  mustEnv("PRODUCTSERVICE_ADDR"),
+		CurrencyServerAddr: mustEnv("CURRENCYSERVICE_ADDR"),
 	}
 }
 

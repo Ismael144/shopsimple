@@ -7,7 +7,7 @@ ENVOY_DESCRIPTOR := $(ENVOY_DIR)/descriptor.pb
 DOCKER_TAG ?= latest
 GO_VERSION ?= 1.25
 
-.PHONY: bufpush descriptor envoy build up clean  
+.PHONY: buf descriptor envoy build up clean  
 
 # Updates buf repo, generates descriptor.pb and then restarts envoy  
 buf: descriptor envoy

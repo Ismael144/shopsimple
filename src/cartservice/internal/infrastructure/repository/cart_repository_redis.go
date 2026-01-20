@@ -43,7 +43,7 @@ func mapCart(ctx context.Context, rdb *redis.Client, userID valueobjects.UserID,
 		if err != nil {
 			return nil, err
 		}
-		// Marshal and then store
+		// Marshal and then store with a ttl of a day.
 		_, err = rdb.Set(ctx, userID.Key(), []byte(cartJson), time.Duration(24*time.Hour)).Result()
 		if err != nil {
 			return nil, err
@@ -51,12 +51,14 @@ func mapCart(ctx context.Context, rdb *redis.Client, userID valueobjects.UserID,
 
 		return cart, nil
 	} else {
+		// Else create a new cart for user
 		cart := entities.NewCart(userID)
 		cart, err = op(cart)
 		cartJson, err := cart.Marshal()
 		if err != nil {
 			return nil, err
 		}
+		// Store with ttl of a day
 		if _, err = rdb.Set(ctx, userID.Key(), []byte(cartJson), time.Duration(24*time.Hour)).Result(); err != nil {
 			return nil, err
 		}
@@ -79,40 +81,47 @@ func (r *CartRepositoryRedis) IsItemInCart(ctx context.Context, userID valueobje
 }
 
 // Add item into cart
-func (r *CartRepositoryRedis) AddItem(ctx context.Context, userID valueobjects.UserID, item *entities.CartItem) (*valueobjects.ProductID, error) {
-	_, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
-		err := cart.AddToCart(item)
+// It takes in productStock value which will
+// be provided by the productservice, returns
+// ErrStockLimitReached when quantity exceeds
+// the given product's stock
+func (r *CartRepositoryRedis) AddItem(ctx context.Context, userID valueobjects.UserID, item *entities.CartItem, productStock uint32) (*entities.Cart, error) {
+	cart, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
+		cart, err := cart.AddToCart(item, productStock)
+		if err != nil {
+			return nil, err
+		}
 		return cart, err
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &item.ProductID, nil
+	return cart, nil
 }
 
 // Deduct item quantity in cart
-func (r *CartRepositoryRedis) DeductFromCart(ctx context.Context, userID valueobjects.UserID, productID valueobjects.ProductID, Quantity uint32) (*valueobjects.ProductID, error) {
+func (r *CartRepositoryRedis) DeductFromCart(ctx context.Context, userID valueobjects.UserID, productID valueobjects.ProductID, Quantity uint32) (*entities.Cart, error) {
 	// Call mapCart
-	_, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
-		cart.DeductFromCart(productID, Quantity)
+	cart, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
+		cart = cart.DeductFromCart(productID, Quantity)
 		return cart, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &productID, nil
+	return cart, nil
 }
 
 // Remove item from cart
-func (r *CartRepositoryRedis) RemoveFromCart(ctx context.Context, userID valueobjects.UserID, productID valueobjects.ProductID) (*valueobjects.ProductID, error) {
-	_, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
-		cart.RemoveItem(productID)
+func (r *CartRepositoryRedis) RemoveFromCart(ctx context.Context, userID valueobjects.UserID, productID valueobjects.ProductID) (*entities.Cart, error) {
+	cart, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
+		cart = cart.RemoveItem(productID)
 		return cart, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &productID, nil
+	return cart, nil
 }
 
 // If user authenticates, guest id which is generated from frontend to as key for cart
@@ -153,9 +162,9 @@ func (r *CartRepositoryRedis) AssignToAuthUser(ctx context.Context, guestUserID 
 }
 
 // Clear all items in cart
-func (r *CartRepositoryRedis) Clear(ctx context.Context, userID valueobjects.UserID) error {
+func (r *CartRepositoryRedis) EmptyCart(ctx context.Context, userID valueobjects.UserID) error {
 	_, err := mapCart(ctx, r.rdb, userID, func(cart *entities.Cart) (*entities.Cart, error) {
-		cart.Clear()
+		cart = cart.Empty()
 		return cart, nil
 	})
 	if err != nil {
@@ -175,4 +184,15 @@ func (r *CartRepositoryRedis) GetCart(ctx context.Context, userID valueobjects.U
 		return nil, err
 	}
 	return cart, nil
+}
+
+// Save current state of current by user id in our database... 
+func (r *CartRepositoryRedis) Save(ctx context.Context, userID valueobjects.UserID, cart *entities.Cart) error {
+	_, err := mapCart(ctx, r.rdb, userID, func(_ *entities.Cart) (*entities.Cart, error) {
+		return cart, nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

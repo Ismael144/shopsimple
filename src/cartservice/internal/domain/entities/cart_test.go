@@ -7,17 +7,27 @@ import (
 )
 
 func InitCartWithItems() *Cart {
-	cart := NewCart(valueobjects.UserID("some-uuid"))
+	cart := NewCart(valueobjects.UserID("some-uuid"), "USD")
 
-	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.Dollars(100))
-	cartItem2 := NewCartItem("2", 4, "some item2", valueobjects.Dollars(100))
-	cartItem3 := NewCartItem("3", 4, "some item3", valueobjects.Dollars(100))
+	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.NewMoney("USD", 100, 29))
+	cartItem2 := NewCartItem("2", 4, "some item2", valueobjects.NewMoney("USD", 100, 29))
+	cartItem3 := NewCartItem("3", 4, "some item3", valueobjects.NewMoney("USD", 100, 29))
 
-	cart.AddToCart(&cartItem1)
-	cart.AddToCart(&cartItem2)
-	cart.AddToCart(&cartItem3)
+	cart.AddToCart(&cartItem1, 10)
+	cart.AddToCart(&cartItem2, 10)
+	cart.AddToCart(&cartItem3, 10)
 
 	return cart
+}
+
+func TestProuctItemStockLimitReached(t *testing.T) {
+	cart := InitCartWithItems()
+	cartItem := NewCartItem("3", 5, "some item3", valueobjects.NewMoney("USD", 100, 29))
+	_, err := cart.AddToCart(&cartItem, 4)
+
+	if err == nil {
+		t.Errorf("Expected ErrStockLimitReach Error, but found: %v", err)
+	}
 }
 
 func TestAddToCart(t *testing.T) {
@@ -41,13 +51,13 @@ func TestGetById(t *testing.T) {
 func TestAddToCartWithSameIds(t *testing.T) {
 	cart := NewCart(valueobjects.UserID("some-uuid"))
 
-	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.Dollars(100))
-	cartItem2 := NewCartItem("1", 4, "some item2", valueobjects.Dollars(100))
-	cartItem3 := NewCartItem("1", 4, "some item3", valueobjects.Dollars(100))
+	cartItem1 := NewCartItem("1", 4, "some item1", valueobjects.NewMoney("USD", 100, 29))
+	cartItem2 := NewCartItem("1", 4, "some item2", valueobjects.NewMoney("USD", 100, 29))
+	cartItem3 := NewCartItem("1", 4, "some item3", valueobjects.NewMoney("USD", 100, 29))
 
-	cart.AddToCart(&cartItem1)
-	cart.AddToCart(&cartItem2)
-	cart.AddToCart(&cartItem3)
+	cart.AddToCart(&cartItem1, 2)
+	cart.AddToCart(&cartItem2, 2)
+	cart.AddToCart(&cartItem3, 2)
 
 	if len(cart.Items) != 1 {
 		t.Errorf("Expected cart length: 1 found: %d", len(cart.Items))

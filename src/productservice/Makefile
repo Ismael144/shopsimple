@@ -26,3 +26,20 @@ test_filter_service:
 		}' \
 		localhost:50051 \
 		shopsimple.product.v1.ProductService/Filter
+test_create_product: 
+		grpcurl -plaintext \
+		-d '{
+			"name": "some product", 
+			"description": "some description", 
+			"unit_price": {
+				"currency_code": "USD", 
+				"units": 100, 
+				"nanos": 32
+			}, 
+			"image_url": "https://images-na.ssl-images-amazon.com/images/G/01/AmazonExports/Events/2024/Stores-Gaming/FinalGraphics/Fuji_Gaming_store_Dashboard_card_1x_EN._SY304_CB564799420_.jpg", 
+			"stock": 100,
+			"rating": 5, 
+			"categories": ["gaming", "pc", "rgb"]
+			}' \
+		localhost:50051 \
+		shopsimple.product.v1.ProductService/Ctreate

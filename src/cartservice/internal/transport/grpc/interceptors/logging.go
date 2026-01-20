@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// For logging on every request, lives on interceptor level
 func LoggingInterceptor(log *zap.Logger) grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
@@ -24,9 +25,11 @@ func LoggingInterceptor(log *zap.Logger) grpc.UnaryServerInterceptor {
 
 		reqID, _ := requestid.From(ctx)
 
+		// Get span from metadata(headers)
 		span := trace.SpanFromContext(ctx)
 		traceID := ""
 
+		// If span is not null, then extract the trace id
 		if span != nil {
 			traceID = span.SpanContext().TraceID().String()
 		}

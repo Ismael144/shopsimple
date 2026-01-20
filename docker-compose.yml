@@ -1,15 +1,25 @@
 services: 
   products_db: 
-    image: postgres:17-alpine
-    container_name: products-db 
-    environment:
-      POSTGRES_USER: products_db_user 
-      POSTGRES_PASSWORD: products_db_password
-      POSTGRES_DB: productssvc
+    image: mongo:latest 
+    container_name: product-mongodb
+    restart: unless-stopped 
+
     ports: 
-      - "5432:5432"
+      - "27017:27017"
+
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword 
+      MONGO_INITDB_DATABASE: catalog
+
     volumes: 
-      - pgdata:/var/lib/postgresql/data
+      - mongo_data:/data/db
+
+    healthcheck: 
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s 
+      retries: 5
 
   jaeger: 
     image: jaegertracing/all-in-one:1.54
@@ -47,6 +57,8 @@ services:
     container_name: envoy
     ports: 
       - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - productservice
     volumes:
@@ -71,3 +83,4 @@ volumes:
   pgdata:
   go-cache:
   redis-data:
+  mongo_data: 

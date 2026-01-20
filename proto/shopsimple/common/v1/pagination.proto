@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "gen/go/shopsimple/common/v1;commonv1";
+option java_multiple_files = true; 
+option java_package = "com.shopsimple.common.v1";
+
+// Represents metadata for data pagination
+message Pagination {
+  // Number of total pages can come out of the data
+  // Is determined depending on the total items
+  int64 total_pages = 1;
+
+  // The current page of data
+  int64 current_page = 2;
+
+  // Total individual items in data
+  int64 total_items = 3;
+}

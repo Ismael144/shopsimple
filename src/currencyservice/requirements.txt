@@ -1,0 +1,8 @@
+grpcio 
+grpcio-tools 
+protobuf 
+googleapis-common-protos
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-grpc
+opentelemetry-exporter-jaeger
